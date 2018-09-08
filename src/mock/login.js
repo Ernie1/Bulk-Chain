@@ -5,7 +5,7 @@ const userMap = {
     roles: ['admin'],
     token: 'admin',
     introduction: 'Super Admin',
-    avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+    avatar: 'http://icons.iconarchive.com/icons/ariil/alphabet/256/Letter-A-icon.png',
     name: 'Super Admin'
   },
   editor: {

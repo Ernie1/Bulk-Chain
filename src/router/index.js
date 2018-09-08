@@ -64,19 +64,7 @@ export const constantRouterMap = [
       }
     ]
   },
-  {
-    path: '/documentation',
-    component: Layout,
-    redirect: '/documentation/index',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/documentation/index'),
-        name: 'Documentation',
-        meta: { title: 'documentation', icon: 'documentation', noCache: true }
-      }
-    ]
-  }
+  // 
   // {
   //   path: '/guide',
   //   component: Layout,
@@ -100,169 +88,187 @@ export default new Router({
 
 export const asyncRouterMap = [
 
-  {
-    path: '/register',
-    component: Layout,
-    redirect: '/register/index',
-    alwaysShow: true,
-    meta: {
-      title: 'register',
-      icon: 'clipboard',
-      roles: ['member']
-    },
-    children: [
-      {
-        path: 'inbound',
-        component: () => import('@/views/register/inbound'),
-        name: 'InboundRequest',
-        meta: {
-          title: 'inboundRequest',
-          roles: ['member']
-        }
-      },
-      {
-        path: 'directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'RegisterRequest',
-        meta: {
-          title: 'registerRequest',
-          roles: ['member']
-        }
-      },
-      {
-        path: 'directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'RequestDetails',
-        meta: {
-          title: 'requestDetails',
-          roles: ['member']
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/register',
+  //   component: Layout,
+  //   redirect: '/register/index',
+  //   alwaysShow: true,
+  //   meta: {
+  //     title: 'register',
+  //     icon: 'clipboard',
+  //     roles: ['member']
+  //   },
+  //   children: [
+  //     {
+  //       path: 'inbound',
+  //       component: () => import('@/views/register/inbound'),
+  //       name: 'InboundRequest',
+  //       meta: {
+  //         title: 'inboundRequest',
+  //         roles: ['member']
+  //       }
+  //     },
+  //     {
+  //       path: 'directive',
+  //       component: () => import('@/views/permission/directive'),
+  //       name: 'RegisterRequest',
+  //       meta: {
+  //         title: 'registerRequest',
+  //         roles: ['member']
+  //       }
+  //     },
+  //     {
+  //       path: 'directive',
+  //       component: () => import('@/views/permission/directive'),
+  //       name: 'RequestDetails',
+  //       meta: {
+  //         title: 'requestDetails',
+  //         roles: ['member']
+  //       }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/transaction',
+  //   component: Layout,
+  //   redirect: '/transaction/index',
+  //   alwaysShow: true,
+  //   meta: {
+  //     title: 'transaction',
+  //     icon: 'guide',
+  //     roles: ['member']
+  //   },
+  //   children: [
+  //     {
+  //       path: 'page',
+  //       component: () => import('@/views/permission/page'),
+  //       name: 'DeliveryRequest',
+  //       meta: {
+  //         title: 'deliveryRequest',
+  //         roles: ['member']
+  //       }
+  //     },
+  //     {
+  //       path: 'directive',
+  //       component: () => import('@/views/permission/directive'),
+  //       name: 'RequestDetails',
+  //       meta: {
+  //         title: 'requestDetails',
+  //         roles: ['member']
+  //       }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/pledge',
+  //   component: Layout,
+  //   redirect: '/pledge/index',
+  //   alwaysShow: true,
+  //   meta: {
+  //     title: 'pledge',
+  //     icon: 'money',
+  //     roles: ['member']
+  //   },
+  //   children: [
+  //     {
+  //       path: 'page',
+  //       component: () => import('@/views/permission/page'),
+  //       name: 'PledgeRequest',
+  //       meta: {
+  //         title: 'pledgeRequest',
+  //         roles: ['member']
+  //       }
+  //     },
+  //     {
+  //       path: 'directive',
+  //       component: () => import('@/views/permission/directive'),
+  //       name: 'UnpledgeRequest',
+  //       meta: {
+  //         title: 'unpledgeRequest',
+  //         roles: ['member']
+  //       }
+  //     },
+  //     {
+  //       path: 'directive',
+  //       component: () => import('@/views/permission/directive'),
+  //       name: 'RequestDetails',
+  //       meta: {
+  //         title: 'requestDetails',
+  //         roles: ['member']
+  //       }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/cancellation',
+  //   component: Layout,
+  //   redirect: '/cancellation/index',
+  //   alwaysShow: true,
+  //   meta: {
+  //     title: 'cancellation',
+  //     icon: 'nested',
+  //     roles: ['member']
+  //   },
+  //   children: [
+  //     {
+  //       path: 'page',
+  //       component: () => import('@/views/permission/page'),
+  //       name: 'CancellationRequest',
+  //       meta: {
+  //         title: 'cancellationRequest',
+  //         roles: ['member']
+  //       }
+  //     },
+  //     {
+  //       path: 'directive',
+  //       component: () => import('@/views/permission/directive'),
+  //       name: 'OutboundRequest',
+  //       meta: {
+  //         title: 'outboundRequest',
+  //         roles: ['member']
+  //       }
+  //     },
+  //     {
+  //       path: 'directive',
+  //       component: () => import('@/views/permission/directive'),
+  //       name: 'RequestDetails',
+  //       meta: {
+  //         title: 'requestDetails',
+  //         roles: ['member']
+  //       }
+  //     }
+  //   ]
+  // },
 
   {
-    path: '/transaction',
+    path: '/application',
     component: Layout,
-    redirect: '/transaction/index',
-    alwaysShow: true,
-    meta: {
-      title: 'transaction',
-      icon: 'guide',
-      roles: ['member']
-    },
-    children: [
-      {
-        path: 'page',
-        component: () => import('@/views/permission/page'),
-        name: 'DeliveryRequest',
-        meta: {
-          title: 'deliveryRequest',
-          roles: ['member']
-        }
-      },
-      {
-        path: 'directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'RequestDetails',
-        meta: {
-          title: 'requestDetails',
-          roles: ['member']
-        }
-      }
-    ]
-  },
-
-  {
-    path: '/pledge',
-    component: Layout,
-    redirect: '/pledge/index',
-    alwaysShow: true,
-    meta: {
-      title: 'pledge',
-      icon: 'money',
-      roles: ['member']
-    },
-    children: [
-      {
-        path: 'page',
-        component: () => import('@/views/permission/page'),
-        name: 'PledgeRequest',
-        meta: {
-          title: 'pledgeRequest',
-          roles: ['member']
-        }
-      },
-      {
-        path: 'directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'UnpledgeRequest',
-        meta: {
-          title: 'unpledgeRequest',
-          roles: ['member']
-        }
-      },
-      {
-        path: 'directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'RequestDetails',
-        meta: {
-          title: 'requestDetails',
-          roles: ['member']
-        }
-      }
-    ]
-  },
-
-  {
-    path: '/cancellation',
-    component: Layout,
-    redirect: '/cancellation/index',
-    alwaysShow: true,
-    meta: {
-      title: 'cancellation',
-      icon: 'nested',
-      roles: ['member']
-    },
-    children: [
-      {
-        path: 'page',
-        component: () => import('@/views/permission/page'),
-        name: 'CancellationRequest',
-        meta: {
-          title: 'cancellationRequest',
-          roles: ['member']
-        }
-      },
-      {
-        path: 'directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'OutboundRequest',
-        meta: {
-          title: 'outboundRequest',
-          roles: ['member']
-        }
-      },
-      {
-        path: 'directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'RequestDetails',
-        meta: {
-          title: 'requestDetails',
-          roles: ['member']
-        }
-      }
-    ]
-  },
-
-  {
-    path: '/myWarehouseReceipt',
-    component: Layout,
-    redirect: '/myWarehouseReceipt/index',
+    redirect: '/application/index',
     children: [
       {
         path: 'index',
-        component: () => import('@/views/documentation/index'),
+        component: () => import('@/views/application/index'),
+        name: 'Application',
+        meta: {
+          title: 'application',
+          icon: 'link',
+          roles: ['member']
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/my-warehouse-receipt',
+    component: Layout,
+    redirect: '/my-warehouse-receipt/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/my-warehouse-receipt/index'),
         name: 'MyWarehouseReceipt',
         meta: {
           title: 'myWarehouseReceipt',
@@ -280,7 +286,7 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'index',
-        component: () => import('@/views/documentation/index'),
+        component: () => import('@/views/permission/page'),
         name: 'MyClient',
         meta: {
           title: 'myClient',

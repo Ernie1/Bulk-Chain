@@ -1,5 +1,6 @@
 export default {
   route: {
+    // --------------------------
     register: 'Register',
     inboundRequest: 'Inbound Request',
     registerRequest: 'Register Request',
@@ -16,10 +17,12 @@ export default {
     cancellationRequest: 'Cancellation Request',
     outboundRequest: 'Outbound Request',
 
+    application: 'Application',
+
     myWarehouseReceipt: 'My Warehouse Receipt',
 
     myClient: 'My Client',
-    // origin
+    // --------------------------
     dashboard: 'Dashboard',
     introduction: 'Introduction',
     documentation: 'Documentation',
@@ -83,6 +86,42 @@ export default {
     i18n: 'I18n',
     externalLink: 'External Link'
   },
+  // --------------------------
+  myWarehouseReceipt: {
+    BatchNumber: 'Batch Number',
+    DateOfIssue: 'Date Of Issue',
+    GoodsQuantity: 'Goods Quantity',
+    Variety: 'Variety',
+    Type: 'Type',
+    Standard: 'Standard',
+    Nonstandard: 'Non-standard',
+    
+    Status: "Status",
+    Inbound: "Inbound",
+    Flowable: "Flowable",
+    Pledged: "Pledged",
+    Outbound: "Outbound",
+    Outbounding: "Outbounding",
+    Registering: "Registering",
+    Pledging: "Pledging",
+    Unpledging: "Unpledging",
+    Unregistering: "Unregistering",
+    Deliverying: "Deliverying",
+
+
+    Holder: "Holder",
+
+    Actions: "Actions",
+    Register: "Register",
+    ApplyforPick: "Apply for Pick",
+    Pledge: "Pledge",
+    Flow: "Flow",
+    Unregister: "Unregister",
+    ViewProgress: "View Progress",
+    Unpledge: "Unpledge",
+
+  },
+  // --------------------------
   navbar: {
     logOut: 'Log Out',
     dashboard: 'Dashboard',

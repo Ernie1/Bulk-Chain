@@ -1,5 +1,6 @@
 export default {
   route: {
+    // --------------------------
     register: '仓单注册',
     inboundRequest: '入库申请',
     registerRequest: '注册申请',
@@ -16,10 +17,12 @@ export default {
     cancellationRequest: '注销申请',
     outboundRequest: '出库申请',
 
+    application: '申请仓单',
+
     myWarehouseReceipt: '我的仓单',
 
     myClient: '我的客户',
-    // origin
+    // --------------------------
     dashboard: '首页',
     introduction: '简述',
     documentation: '文档',
@@ -83,6 +86,41 @@ export default {
     i18n: '国际化',
     externalLink: '外链'
   },
+  // --------------------------
+  myWarehouseReceipt: {
+    BatchNumber: '批次号',
+    DateOfIssue: '填发日期',
+    GoodsQuantity: '货物数量',
+    Variety: '品种',
+    Type: '类型',
+    Standard: '标准',
+    Nonstandard: '非标准',
+
+    Status: "状态",
+    Inbound: "入库完成",
+    Flowable: "可流转",
+    Pledged: "已质押",
+    Outbound: "已出库",
+    Outbounding: "出库审核中",
+    Registering: "注册审核中",
+    Pledging: "质押审核中",
+    Unpledging: "解押审核中",
+    Unregistering: "注销审核中",
+    Deliverying: "交割审核中",
+
+    Holder: "持有人",
+
+    Actions: "操作",
+    Register: "注册",
+    ApplyforPick: "申请提货",
+    Pledge: "质押",
+    Flow: "流转",
+    Unregister: "注销",
+    ViewProgress: "查看进度",
+    Unpledge: "解押",
+    
+  },
+  // --------------------------
   navbar: {
     logOut: '退出登录',
     dashboard: '首页',
