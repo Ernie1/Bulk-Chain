@@ -31,35 +31,39 @@
       </el-form-item>
       <!--  -->
       <el-form-item label="货物信息">
-        <el-col :span="6">
-          <el-form-item prop="goodsVariety">
-            <md-input v-model="ruleForm.goodsVariety">品种代号</md-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="3">&nbsp;</el-col>
-        <el-col :span="6">
-          <el-form-item prop="goodsQuantity">
-            <md-input v-model="ruleForm.goodsQuantity">数量</md-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="3">&nbsp;</el-col>
-        <el-col :span="6">
-          <el-form-item prop="goodsLevel">
-            <md-input v-model="ruleForm.goodsLevel">品级</md-input>
-          </el-form-item>
-        </el-col>
+        <el-row>
+          <el-col :span="6">
+            <el-form-item prop="goodsVariety">
+              <md-input v-model="ruleForm.goodsVariety">品种代号</md-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="3">&nbsp;</el-col>
+          <el-col :span="6">
+            <el-form-item prop="goodsQuantity">
+              <md-input v-model="ruleForm.goodsQuantity">数量</md-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="3">&nbsp;</el-col>
+          <el-col :span="6">
+            <el-form-item prop="goodsLevel">
+              <md-input v-model="ruleForm.goodsLevel">品级</md-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <!--  -->
-        <el-col :span="11">
-          <el-form-item prop="goodsRegion">
-            <md-input v-model="ruleForm.goodsRegion">产地</md-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="3">&nbsp;</el-col>
-        <el-col :span="10">
-          <el-form-item prop="goodsTransport">
-            <md-input v-model="ruleForm.goodsTransport">运输方式</md-input>
-          </el-form-item>
-        </el-col>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item prop="goodsRegion">
+              <md-input v-model="ruleForm.goodsRegion">产地</md-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="3">&nbsp;</el-col>
+          <el-col :span="10">
+            <el-form-item prop="goodsTransport">
+              <md-input v-model="ruleForm.goodsTransport">运输方式</md-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <!--  -->
         <el-form-item prop="goodsProduceDate">
           <md-input v-model="ruleForm.goodsProduceDate">生产日期</md-input>
