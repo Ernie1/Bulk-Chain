@@ -2,7 +2,7 @@
   <div class="app-container" style="width: 1000px; margin: 0 auto;">
 
     <!-- 按钮 -->
-    <el-button style="margin-bottom: 30px;" type="primary" icon="el-icon-edit" @click="dialogVisible=true">填写新申请</el-button>
+    <el-button style="margin-bottom: 30px;" type="primary" icon="el-icon-edit" @click="active=0;dialogVisible=true;">填写新申请</el-button>
     
     <!-- 申请列表 -->
     <el-table
