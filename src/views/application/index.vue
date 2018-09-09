@@ -1,10 +1,43 @@
 <template>
   <div class="app-container" style="width: 1000px; margin: 0 auto;">
-    <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
 
+    <!-- 按钮 -->
+    <el-button style="margin-bottom: 30px;" type="primary" icon="el-icon-edit" @click="dialogVisible=true">填写新申请</el-button>
+    
+    <!-- 申请列表 -->
+    <el-table
+      v-loading="listLoading"
+      :key="tableKey"
+      :data="list"
+      fit
+      highlight-current-row
+      style="width: 100%;"
+      @row-click="dialogVisible=true">
+      <el-table-column label="申请编号" align="center" width="300px">
+        <template slot-scope="scope">
+          <span>{{ scope.row.BatchNumber }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="申请日期" width="300px" align="center">
+        <template slot-scope="scope">
+          <span>{{ scope.row.DateOfIssue | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" class-name="status-col" width="300px">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.Status | statusFilter">{{ scope.row.Status }}</el-tag>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <div class="pagination-container">
+      <el-pagination :current-page="listQuery.page" :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" :total="total" background layout="total, sizes, prev, pager, next" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+    </div>
+    
+    <!-- 弹出对话框 -->
     <el-dialog
       :before-close="handleClose"
-      visible>
+      :visible.sync="dialogVisible">
       <!--  -->
       <el-steps :active="active" finish-status="success" align-center>
         <el-step title="填写入库资料" icon="el-icon-edit-outline"></el-step>
@@ -282,6 +315,8 @@
 
 <script>
 import MdInput from "@/components/MDinput";
+import { fetchList } from '@/api/article'
+import { parseTime } from '@/utils'
 
 export default {
   name: "ApplicationForm",
@@ -289,9 +324,25 @@ export default {
     MdInput
   },
   directives: {},
-  filters: {},
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        published: 'success',
+        draft: 'info',
+        deleted: 'danger'
+      }
+      return statusMap[status]||'success'
+    }
+  },
   data() {
     return {
+      tableKey: 0,
+      list: null,
+      listLoading: true,
+      listQuery: {
+        page: 1,
+        limit: 10,
+      },
       dialogVisible: false,
       active: 3,
       ruleForm: {
@@ -352,8 +403,30 @@ export default {
       }
     };
   },
-  created() {},
+  created() {
+    this.getList()
+  },
   methods: {
+    getList() {
+      this.listLoading = true
+      fetchList(this.listQuery).then(response => {
+        this.list = response.data.items
+        this.total = response.data.total
+
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
+    },
+    handleSizeChange(val) {
+      this.listQuery.limit = val
+      this.getList()
+    },
+    handleCurrentChange(val) {
+      this.listQuery.page = val
+      this.getList()
+    },
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -364,11 +437,14 @@ export default {
       });
     },
     handleClose(done) {
-      this.$confirm('确认关闭？')
-        .then(_ => {
-          done();
-        })
-        .catch(_ => {});
+      if(this.active != 0)
+        done();
+      else
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
     }
   }
 };

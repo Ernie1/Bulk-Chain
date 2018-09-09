@@ -1,12 +1,14 @@
 <template>
   <div class="app-container">
     <el-table
+      ref="multipleTable"
       v-loading="listLoading"
       :key="tableKey"
       :data="list"
       fit
       highlight-current-row
-      style="width: 100%;">
+      style="width: 100%;"
+      @row-click="seeDetail">
        
       <el-table-column type="expand">
         <template slot-scope="props">
@@ -105,22 +107,22 @@
         <template slot-scope="scope">
 
           <template v-if="scope.row.Status=='Inbound'">
-            <el-button type="success" size="mini" @click="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Register') }}</el-button>
-            <el-button type="info" size="mini" @click="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.ApplyforPick') }}</el-button>
+            <el-button type="success" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Register') }}</el-button>
+            <el-button type="info" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.ApplyforPick') }}</el-button>
           </template>
 
           <template v-if="scope.row.Status=='Flowable'">
-            <el-button type="warning" size="mini" @click="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Pledge') }}</el-button>
-            <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Flow') }}</el-button>
-            <el-button type="danger" size="mini" @click="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Unregister') }}</el-button>
+            <el-button type="warning" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Pledge') }}</el-button>
+            <el-button type="primary" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Flow') }}</el-button>
+            <el-button type="danger" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Unregister') }}</el-button>
           </template>
 
           <template v-if="scope.row.Status.substr(scope.row.Status.length - 3)=='ing'">
-            <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.ViewProgress') }}</el-button>
+            <el-button type="primary" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.ViewProgress') }}</el-button>
           </template>
 
           <template v-if="scope.row.Status=='Pledged'">
-            <el-button type="warning" size="mini" @click="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
+            <el-button type="warning" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
           </template>
           
         </template>
@@ -277,6 +279,9 @@ export default {
     this.getList();
   },
   methods: {
+    seeDetail(row, event, column){
+      this.$refs.multipleTable.toggleRowExpansion(row);
+    },
     filterVariety(value, row) {
       return row.Variety == value;
     },
