@@ -14,6 +14,7 @@ for (let i = 0; i < count; i++) {
     GoodsQuantity: '@integer(1,100)',
     'Variety|1': ['WH', 'CF', 'SR', 'OI', 'RI', 'PM', 'RS', 'JR'],
     Type: +Mock.Random.boolean(),
+    // 'Status|1': ['审核中', '审核失败', '等待入库'],
     'Status|1': ['Inbound', 'Flowable', 'Pledged', 'Outbound', 'Outbounding', 'Registering', 'Pledging', 'Unpledging', 'Unregistering', 'Deliverying'],
     Holder: '@cword(7,15)有限公司',
 

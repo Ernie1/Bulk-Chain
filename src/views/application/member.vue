@@ -143,11 +143,11 @@
         <el-form v-if="active==1" :model="ruleForm" ref="ruleForm" label-width="100px" label-position="right">
           <div style="display: flex; justify-content: center;">
             <!--  -->
-            <div v-if="false">
+            <div v-if="true">
               <h1><i class="el-icon-time"></i> 您的入库申请已提交审核，请耐心等候</h1>
             </div>
             <!--  -->
-            <div v-if="true" style="display: flex; align-items: center;">
+            <div v-if="false" style="display: flex; align-items: center;">
               <h1><i class="el-icon-circle-close-outline"></i> 您的入库申请未通过审核</h1>
               <h2>&nbsp;&nbsp;仓库已满</h2>
             </div>
@@ -327,9 +327,9 @@ export default {
   filters: {
     statusFilter(status) {
       const statusMap = {
-        published: 'success',
-        draft: 'info',
-        deleted: 'danger'
+        '等待入库': 'success',
+        '审核中': 'info',
+        '审核失败': 'danger'
       }
       return statusMap[status]||'success'
     }
