@@ -136,13 +136,22 @@
 
         <!-- 第3步骤 -->
         <el-form v-if="active==2" :model="ruleForm" ref="ruleForm" label-width="100px" label-position="right">
-          <div style="display: flex; justify-content: center;">
+          <div style="display: flex; align-items: center; flex-direction: column;">
             <h1><i class="el-icon-circle-check-outline"></i> 您的申请已审核通过，请尽快前往仓库入库</h1>
+            <el-form-item label="仓库地址">
+              <span> 广东省佛山市*************106号 </span>
+            </el-form-item>
           </div>
-          <!--  -->
-          <el-form-item label="仓库地址">
-            <span> 广东省佛山市*************106号 </span>
+        </el-form>
+
+        <!-- 第4步骤 -->
+        <el-form v-if="active==3" :model="ruleForm" ref="ruleForm" label-width="100px" label-position="right">
+          <div style="display: flex; align-items: center; flex-direction: column;">
+            <h1><i class="el-icon-circle-check-outline"></i> 您的仓单已成功生成</h1>
+            <el-form-item label="仓单批次号">
+            <span> WR_0000001 </span>
           </el-form-item>
+          </div>
         </el-form>
 
         <!-- 申请表详情 -->
@@ -284,7 +293,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      active: 2,
+      active: 3,
       ruleForm: {
         name: "张三",
         phone: "19900289212",
