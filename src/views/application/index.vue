@@ -107,7 +107,134 @@
         </el-form>
 
         <!-- 第2步骤 -->
-        
+        <el-form v-if="true" :model="ruleForm" ref="ruleForm" label-width="100px" label-position="right">
+          <div style="display: flex; justify-content: center;">
+            <h1><i class="el-icon-time"></i> 您的入库申请已提交审核，请耐心等候</h1>
+          </div>
+          <!--  -->
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="申请编号">
+                <span> ruleForm.applicationID </span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="申请日期">
+                <span> ruleForm.applicationDate </span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <div style="height: 50px"></div>
+          <el-form-item label="申请人信息">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="姓名">
+                  <span>{{ ruleForm.name }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="电话">
+                  <span>{{ ruleForm.phone }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <!--  -->
+          <el-form-item label="客户信息">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="客户ID">
+                  <span>{{ ruleForm.clientID }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="名称">
+                  <span>{{ ruleForm.clientCompany }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="客户姓名">
+                  <span>{{ ruleForm.clientName }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="客户电话">
+                  <span>{{ ruleForm.clientPhone }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <!--  -->
+          <el-form-item label="货物信息">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="品种代号">
+                  <span>{{ ruleForm.goodsVariety }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="数量">
+                  <span>{{ ruleForm.goodsQuantity }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="品级">
+                  <span>{{ ruleForm.clientName }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="产地">
+                  <span>{{ ruleForm.goodsRegion }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="运输方式">
+                  <span>{{ ruleForm.goodsTransport }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="生产日期">
+                  <span>{{ ruleForm.goodsProduceDate }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="有效期">
+                  <span>{{ ruleForm.goodsValidityPeriod }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="品牌">
+                  <span>{{ ruleForm.goodsBand }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="货物包装">
+                  <span>{{ ruleForm.goodsPack }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="货物规格">
+                  <span>{{ ruleForm.goodsRank }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <!--  -->
+          <el-form-item label="仓库信息">
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="仓库ID">
+                  <span>{{ ruleForm.warehouseID }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="拟入库时间">
+                  <span>{{ ruleForm.inboundPlanTime }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form-item>
+        </el-form>
       </div>
 
     <!-- 第1步骤 -->
@@ -136,16 +263,17 @@ export default {
       dialogVisible: false,
       active: 1,
       ruleForm: {
-        name: "",
-        phone: "",
-        clientID: "",
-        clientName: "",
-        clientPhone: "",
-        goodsVariety: "",
-        goodsQuantity: "",
-        goodsLevel: "",
-        goodsRegion: "",
-        goodsTransport: "",
+        name: "张三",
+        phone: "19900289212",
+        clientID: "client_000001",
+        clientCompany: "A农产品加工有限公司",
+        clientName: "莉莉丝",
+        clientPhone: "19900289212",
+        goodsVariety: "WH",
+        goodsQuantity: "200手",
+        goodsLevel: "A",
+        goodsRegion: "河南",
+        goodsTransport: "货车",
         goodsProduceDate: "",
         goodsValidityPeriod: "",
         goodsBand: "",
@@ -154,6 +282,26 @@ export default {
         warehouseID: "",
         inboundPlanTime: ""
       },
+      // ruleForm: {
+      //   name: "",
+      //   phone: "",
+      //   clientID: "",
+      //   clientCompany: "",
+      //   clientName: "",
+      //   clientPhone: "",
+      //   goodsVariety: "",
+      //   goodsQuantity: "",
+      //   goodsLevel: "",
+      //   goodsRegion: "",
+      //   goodsTransport: "",
+      //   goodsProduceDate: "",
+      //   goodsValidityPeriod: "",
+      //   goodsBand: "",
+      //   goodsPack: "",
+      //   goodsRank: "",
+      //   warehouseID: "",
+      //   inboundPlanTime: ""
+      // },
       rules: {
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         phone: [{ required: true, message: "请输入电话", trigger: "blur" }],
