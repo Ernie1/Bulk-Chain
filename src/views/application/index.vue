@@ -15,7 +15,7 @@
 
       <div style="width: 600px; margin: 50px auto">
         <!-- 第1步骤 -->
-        <el-form v-if="false" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" label-position="left">
+        <el-form v-if="active==0" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" label-position="left">
           <!--  -->
           <el-form-item label="申请人信息">
             <el-form-item prop="name">
@@ -107,9 +107,17 @@
         </el-form>
 
         <!-- 第2步骤 -->
-        <el-form v-if="true" :model="ruleForm" ref="ruleForm" label-width="100px" label-position="right">
+        <el-form v-if="active==1" :model="ruleForm" ref="ruleForm" label-width="100px" label-position="right">
           <div style="display: flex; justify-content: center;">
-            <h1><i class="el-icon-time"></i> 您的入库申请已提交审核，请耐心等候</h1>
+            <!--  -->
+            <div v-if="false">
+              <h1><i class="el-icon-time"></i> 您的入库申请已提交审核，请耐心等候</h1>
+            </div>
+            <!--  -->
+            <div v-if="true" style="display: flex; align-items: center;">
+              <h1><i class="el-icon-circle-close-outline"></i> 您的入库申请未通过审核</h1>
+              <h2>&nbsp;&nbsp;仓库已满</h2>
+            </div>
           </div>
           <!--  -->
           <el-row>
@@ -124,6 +132,21 @@
               </el-form-item>
             </el-col>
           </el-row>
+        </el-form>
+
+        <!-- 第3步骤 -->
+        <el-form v-if="active==2" :model="ruleForm" ref="ruleForm" label-width="100px" label-position="right">
+          <div style="display: flex; justify-content: center;">
+            <h1><i class="el-icon-circle-check-outline"></i> 您的申请已审核通过，请尽快前往仓库入库</h1>
+          </div>
+          <!--  -->
+          <el-form-item label="仓库地址">
+            <span> 广东省佛山市*************106号 </span>
+          </el-form-item>
+        </el-form>
+
+        <!-- 申请表详情 -->
+        <el-form v-if="active!=0" :model="ruleForm" ref="ruleForm" label-width="100px" label-position="right">
           <div style="height: 50px"></div>
           <el-form-item label="申请人信息">
             <el-row>
@@ -238,7 +261,7 @@
       </div>
 
     <!-- 第1步骤 -->
-    <span v-if="false" slot="footer">
+    <span v-if="active==0" slot="footer">
       <el-button type="success" @click="dialogVisible = false">保存</el-button>
       <el-button type="primary" @click="submitForm('ruleForm')">提交审核</el-button>
     </span>
@@ -261,7 +284,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      active: 1,
+      active: 2,
       ruleForm: {
         name: "张三",
         phone: "19900289212",
