@@ -7,65 +7,65 @@
       fit
       highlight-current-row
       style="width: 100%;">
+       
       <el-table-column type="expand">
-       
-      <template slot-scope="props">
-        <el-form label-position="left" inline class="table-expand">
-          <el-form-item label="起始编号">
-            <span>{{ props.row.BatchNumber }}</span>
-          </el-form-item>
-          <el-form-item label="结束编号">
-            <span>{{ props.row.DateOfIssue }}</span>
-          </el-form-item>
-          <el-form-item label="填发人">
-            <span>{{ props.row.GoodsQuantity }}</span>
-          </el-form-item>
-          <el-form-item label="填发地">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="填发日期">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="保管人">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="保管人Id">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="储存期间">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="仓储场所">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="储存期间">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="存货人">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="存货人ID">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="会员名称">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="会员ID">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="仓单持有人ID">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="流转/质押历史">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-          <el-form-item label="仓单历史">
-            <span>{{ props.row.Variety }}</span>
-          </el-form-item>
-        </el-form>
-      </template>
-       
+        <template slot-scope="props">
+          <el-form label-position="left" inline class="table-expand">
+            <el-form-item label="起始编号">
+              <span>{{ props.row.BatchNumber }}</span>
+            </el-form-item>
+            <el-form-item label="结束编号">
+              <span>{{ props.row.DateOfIssue }}</span>
+            </el-form-item>
+            <el-form-item label="填发人">
+              <span>{{ props.row.GoodsQuantity }}</span>
+            </el-form-item>
+            <el-form-item label="填发地">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="填发日期">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="保管人">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="保管人Id">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="储存期间">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="仓储场所">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="储存期间">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="存货人">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="存货人ID">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="会员名称">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="会员ID">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="仓单持有人ID">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="流转/质押历史">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="仓单历史">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
       </el-table-column>
+       
       <el-table-column :label="$t('myWarehouseReceipt.BatchNumber')" align="center" width="150px" prop="BatchNumber" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.BatchNumber }}</span>

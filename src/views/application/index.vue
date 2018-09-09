@@ -13,103 +13,110 @@
         <el-step title="生成仓单" icon="el-icon-printer"></el-step>
       </el-steps>
 
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" label-position="left" style="width: 600px; margin: 50px auto">
-        <!--  -->
-        <el-form-item label="申请人信息">
-          <el-form-item prop="name">
-            <md-input v-model="ruleForm.name">姓名</md-input>
-          </el-form-item>
-          <el-form-item prop="phone">
-            <md-input v-model="ruleForm.phone">电话</md-input>
-          </el-form-item>
-        </el-form-item>
-        <!--  -->
-        <el-form-item label="客户信息">
-          <el-form-item prop="clientID">
-            <md-input v-model="ruleForm.clientID">客户ID</md-input>
-          </el-form-item>
-          <el-form-item prop="clientName">
-            <md-input v-model="ruleForm.clientName">客户姓名</md-input>
-          </el-form-item>
-          <el-form-item prop="clientPhone">
-            <md-input v-model="ruleForm.clientPhone">客户电话</md-input>
-          </el-form-item>
-        </el-form-item>
-        <!--  -->
-        <el-card>
-          <el-form-item label="货物信息">
-            <el-row>
-              <el-col :span="6">
-                <el-form-item prop="goodsVariety">
-                  <md-input v-model="ruleForm.goodsVariety">品种代号</md-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="3">&nbsp;</el-col>
-              <el-col :span="6">
-                <el-form-item prop="goodsQuantity">
-                  <md-input v-model="ruleForm.goodsQuantity">数量</md-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="3">&nbsp;</el-col>
-              <el-col :span="6">
-                <el-form-item prop="goodsLevel">
-                  <md-input v-model="ruleForm.goodsLevel">品级</md-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <!--  -->
-            <el-row>
-              <el-col :span="11">
-                <el-form-item prop="goodsRegion">
-                  <md-input v-model="ruleForm.goodsRegion">产地</md-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="3">&nbsp;</el-col>
-              <el-col :span="10">
-                <el-form-item prop="goodsTransport">
-                  <md-input v-model="ruleForm.goodsTransport">运输方式</md-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <!--  -->
-            <el-form-item prop="goodsProduceDate">
-              <md-input v-model="ruleForm.goodsProduceDate">生产日期</md-input>
+      <div style="width: 600px; margin: 50px auto">
+        <!-- 第1步骤 -->
+        <el-form v-if="false" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" label-position="left">
+          <!--  -->
+          <el-form-item label="申请人信息">
+            <el-form-item prop="name">
+              <md-input v-model="ruleForm.name">姓名</md-input>
             </el-form-item>
-            <!--  -->
-            <el-form-item prop="goodsValidityPeriod">
-              <md-input v-model="ruleForm.goodsValidityPeriod">有效期</md-input>
-            </el-form-item>
-            <!--  -->
-            <el-form-item prop="goodsBand">
-              <md-input v-model="ruleForm.goodsBand">品牌</md-input>
-            </el-form-item>
-            <!--  -->
-            <el-form-item prop="goodsPack">
-              <md-input v-model="ruleForm.goodsPack">货物包装</md-input>
-            </el-form-item>
-            <!--  -->
-            <el-form-item prop="goodsRank">
-              <md-input v-model="ruleForm.goodsRank">货物规格</md-input>
+            <el-form-item prop="phone">
+              <md-input v-model="ruleForm.phone">电话</md-input>
             </el-form-item>
           </el-form-item>
-        </el-card>
-        <!--  -->
-        <el-form-item label="仓库信息">
-          <el-form-item prop="warehouseID">
-            <md-input v-model="ruleForm.warehouseID">仓库ID</md-input>
+          <!--  -->
+          <el-form-item label="客户信息">
+            <el-form-item prop="clientID">
+              <md-input v-model="ruleForm.clientID">客户ID</md-input>
+            </el-form-item>
+            <el-form-item prop="clientName">
+              <md-input v-model="ruleForm.clientName">客户姓名</md-input>
+            </el-form-item>
+            <el-form-item prop="clientPhone">
+              <md-input v-model="ruleForm.clientPhone">客户电话</md-input>
+            </el-form-item>
           </el-form-item>
-          <el-form-item prop="inboundPlanTime">
-            <md-input v-model="ruleForm.inboundPlanTime">拟入库时间</md-input>
+          <!--  -->
+          <el-card>
+            <el-form-item label="货物信息">
+              <el-row>
+                <el-col :span="6">
+                  <el-form-item prop="goodsVariety">
+                    <md-input v-model="ruleForm.goodsVariety">品种代号</md-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="3">&nbsp;</el-col>
+                <el-col :span="6">
+                  <el-form-item prop="goodsQuantity">
+                    <md-input v-model="ruleForm.goodsQuantity">数量</md-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="3">&nbsp;</el-col>
+                <el-col :span="6">
+                  <el-form-item prop="goodsLevel">
+                    <md-input v-model="ruleForm.goodsLevel">品级</md-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <!--  -->
+              <el-row>
+                <el-col :span="11">
+                  <el-form-item prop="goodsRegion">
+                    <md-input v-model="ruleForm.goodsRegion">产地</md-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="3">&nbsp;</el-col>
+                <el-col :span="10">
+                  <el-form-item prop="goodsTransport">
+                    <md-input v-model="ruleForm.goodsTransport">运输方式</md-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <!--  -->
+              <el-form-item prop="goodsProduceDate">
+                <md-input v-model="ruleForm.goodsProduceDate">生产日期</md-input>
+              </el-form-item>
+              <!--  -->
+              <el-form-item prop="goodsValidityPeriod">
+                <md-input v-model="ruleForm.goodsValidityPeriod">有效期</md-input>
+              </el-form-item>
+              <!--  -->
+              <el-form-item prop="goodsBand">
+                <md-input v-model="ruleForm.goodsBand">品牌</md-input>
+              </el-form-item>
+              <!--  -->
+              <el-form-item prop="goodsPack">
+                <md-input v-model="ruleForm.goodsPack">货物包装</md-input>
+              </el-form-item>
+              <!--  -->
+              <el-form-item prop="goodsRank">
+                <md-input v-model="ruleForm.goodsRank">货物规格</md-input>
+              </el-form-item>
+            </el-form-item>
+          </el-card>
+          <!--  -->
+          <el-form-item label="仓库信息">
+            <el-form-item prop="warehouseID">
+              <md-input v-model="ruleForm.warehouseID">仓库ID</md-input>
+            </el-form-item>
+            <el-form-item prop="inboundPlanTime">
+              <md-input v-model="ruleForm.inboundPlanTime">拟入库时间</md-input>
+            </el-form-item>
           </el-form-item>
-        </el-form-item>
-      </el-form>
-      <!--  -->
-      <span slot="footer">
-        <el-button type="success" @click="dialogVisible = false">保存</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')">提交审核</el-button>
-      </span>
-    </el-dialog>
+        </el-form>
 
+        <!-- 第2步骤 -->
+        
+      </div>
+
+    <!-- 第1步骤 -->
+    <span v-if="false" slot="footer">
+      <el-button type="success" @click="dialogVisible = false">保存</el-button>
+      <el-button type="primary" @click="submitForm('ruleForm')">提交审核</el-button>
+    </span>
+
+    </el-dialog>
     <!--  -->
   </div>
 </template>
@@ -127,7 +134,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
-      active: 0,
+      active: 1,
       ruleForm: {
         name: "",
         phone: "",
