@@ -238,17 +238,17 @@ export const asyncRouterMap = [
     ]
   },
   {
-    path: '/my-warehouse-receipt',
+    path: '/my-member',
     component: Layout,
     meta : { roles: ['exchange'] },
     children: [
       {
         path: 'exchange',
-        component: () => import('@/views/my-warehouse-receipt/exchange'),
-        name: 'MyWarehouseReceipt',
+        component: () => import('@/views/my-member/exchange'),
+        name: 'MyMember',
         meta: {
-          title: 'myWarehouseReceipt',
-          icon: 'documentation',
+          title: '我的会员',
+          icon: 'peoples',
         }
       }
     ]
