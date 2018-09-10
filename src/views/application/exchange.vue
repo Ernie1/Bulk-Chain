@@ -28,13 +28,13 @@
             <el-form-item label="保管人Id">
               <span>{{ props.row.Variety }}</span>
             </el-form-item>
-            <el-form-item label="储存期间">
-              <span>{{ props.row.Variety }}</span>
-            </el-form-item>
             <el-form-item label="仓储场所">
               <span>{{ props.row.Variety }}</span>
             </el-form-item>
-            <el-form-item label="储存期间">
+            <el-form-item label="开始日期">
+              <span>{{ props.row.Variety }}</span>
+            </el-form-item>
+            <el-form-item label="截止日期">
               <span>{{ props.row.Variety }}</span>
             </el-form-item>
             <el-form-item label="存货人">
@@ -58,7 +58,12 @@
           </el-form>
         </template>
       </el-table-column>
-       
+    
+       <el-table-column label="申请类型" align="center" width="120px" prop="Type" :filters="[{text: '注册申请', value: '注册申请' }, {text: '注销申请', value: '注销申请' }, {text: '质押审核', value: '质押审核' }, {text: '解押审核', value: '解押审核' }]" :filter-method="filterExchangeApplication">
+        <template slot-scope="scope">
+          <el-tag :type="scope.row.ExchangeApplication | ExchangeApplicationFilter">{{ scope.row.ExchangeApplication }}</el-tag>
+        </template>
+      </el-table-column>  
       <el-table-column :label="$t('myWarehouseReceipt.BatchNumber')" align="center" width="150px" prop="BatchNumber" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.BatchNumber }}</span>
@@ -89,33 +94,10 @@
           <span>{{ scope.row.Holder }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('myWarehouseReceipt.Status')" class-name="status-col" width="120px"  prop="Status" :filters="[{ text: $t('myWarehouseReceipt.Inbound'), value: 'Inbound' }, { text: $t('myWarehouseReceipt.Flowable'), value: 'Flowable' }, { text: $t('myWarehouseReceipt.Pledged'), value: 'Pledged' }, { text: $t('myWarehouseReceipt.Outbound'), value: 'Outbound' }, { text: $t('myWarehouseReceipt.Outbounding'), value: 'Outbounding' }, { text: $t('myWarehouseReceipt.Registering'), value: 'Registering' }, { text: $t('myWarehouseReceipt.Pledging'), value: 'Pledging' }, { text: $t('myWarehouseReceipt.Unpledging'), value: 'Unpledging' }, { text: $t('myWarehouseReceipt.Unregistering'), value: 'Unregistering' }, { text: $t('myWarehouseReceipt.Deliverying'), value: 'Deliverying' }]" :filter-method="filterStatus">
-        <template slot-scope="scope"> 
-          <el-tag>{{ $t('myWarehouseReceipt.' + scope.row.Status) }}</el-tag>
-        </template>
-      </el-table-column>
       <el-table-column :label="$t('myWarehouseReceipt.Actions')" align="center" width="240px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-
-          <template v-if="scope.row.Status=='Inbound'">
-            <el-button type="success" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Register') }}</el-button>
-            <el-button type="info" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.ApplyforPick') }}</el-button>
-          </template>
-
-          <template v-if="scope.row.Status=='Flowable'">
-            <el-button type="warning" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Pledge') }}</el-button>
-            <el-button type="primary" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Flow') }}</el-button>
-            <el-button type="danger" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Unregister') }}</el-button>
-          </template>
-
-          <template v-if="scope.row.Status.substr(scope.row.Status.length - 3)=='ing'">
-            <el-button type="primary" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.ViewProgress') }}</el-button>
-          </template>
-
-          <template v-if="scope.row.Status=='Pledged'">
-            <el-button type="warning" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
-          </template>
-          
+            <el-button type="success" size="mini" @click.stop="handleUpdate(scope.row)">批准</el-button>
+            <el-button type="danger" size="mini" @click.stop="handleUpdate(scope.row)">拒绝</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -128,9 +110,7 @@
 </template>
 
 <script>
-import {
-  fetchList
-} from "@/api/article";
+import { fetchList } from "@/api/article";
 import waves from "@/directive/waves"; // 水波纹指令
 import { parseTime } from "@/utils";
 
@@ -142,6 +122,15 @@ export default {
   filters: {
     typeStatusFilter(type) {
       return type ? "success" : "danger";
+    },
+    ExchangeApplicationFilter(ExchangeApplication) {
+      const ExchangeApplicationMap = {
+        注册申请: "success",
+        注销申请: "danger",
+        质押审核: "info",
+        解押审核: "warn"
+      };
+      return ExchangeApplicationMap[ExchangeApplication];
     }
   },
   data() {
@@ -160,17 +149,17 @@ export default {
     this.getList();
   },
   methods: {
-    seeDetail(row, event, column){
+    seeDetail(row, event, column) {
       this.$refs.multipleTable.toggleRowExpansion(row);
+    },
+    filterExchangeApplication(value, row) {
+      return row.ExchangeApplication == value;
     },
     filterVariety(value, row) {
       return row.Variety == value;
     },
     filterType(value, row) {
       return row.Type == value;
-    },
-    filterStatus(value, row) {
-      return row.Status == value;
     },
     getList() {
       this.listLoading = true;
