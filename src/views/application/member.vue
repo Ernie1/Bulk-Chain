@@ -314,16 +314,16 @@
 </template>
 
 <script>
-import MdInput from "@/components/MDinput";
 import { fetchList } from '@/api/article'
 import { parseTime } from '@/utils'
+import MdInput from "@/components/MDinput";
 
 export default {
   name: "ApplicationForm",
+  directives: {},
   components: {
     MdInput
   },
-  directives: {},
   filters: {
     statusFilter(status) {
       const statusMap = {
