@@ -5,7 +5,7 @@
 
       <div class="title-container">
         <h3 class="title">{{ $t('login.title') }}</h3>
-        <lang-select class="set-language"/>
+        <!-- <lang-select class="set-language"/> -->
       </div>
 
       <el-form-item prop="username">
@@ -63,47 +63,50 @@
 </template>
 
 <script>
-import { isvalidUsername } from '@/utils/validate'
-import LangSelect from '@/components/LangSelect'
-import SocialSign from './socialsignin'
+import { isvalidUsername } from "@/utils/validate";
+// import LangSelect from '@/components/LangSelect'
+import SocialSign from "./socialsignin";
 
 export default {
-  name: 'Login',
-  components: { LangSelect, SocialSign },
+  name: "Login",
+  components: { 
+    // LangSelect, 
+    SocialSign 
+  },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
-        callback(new Error('Please enter the user name'))
+        callback(new Error("请输入用户名"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     const validatePassword = (rule, value, callback) => {
       if (!value.length) {
-        callback(new Error('Please enter the password'))
+        callback(new Error("请输入密码"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     return {
       loginForm: {
         // username: 'admin',
         // password: '1111111'
-        username: '',
-        password: ''
+        username: "",
+        password: ""
       },
       loginRules: {
         username: [
-          { required: true, trigger: 'blur', validator: validateUsername }
+          { required: true, trigger: "blur", validator: validateUsername }
         ],
         password: [
-          { required: true, trigger: 'blur', validator: validatePassword }
+          { required: true, trigger: "blur", validator: validatePassword }
         ]
       },
-      passwordType: 'password',
+      passwordType: "password",
       loading: false,
       showDialog: false
-    }
+    };
   },
   created() {
     // window.addEventListener('hashchange', this.afterQRScan)
@@ -113,30 +116,30 @@ export default {
   },
   methods: {
     showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
+      if (this.passwordType === "password") {
+        this.passwordType = "";
       } else {
-        this.passwordType = 'password'
+        this.passwordType = "password";
       }
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
+          this.loading = true;
           this.$store
-            .dispatch('LoginByUsername', this.loginForm)
+            .dispatch("LoginByUsername", this.loginForm)
             .then(() => {
-              this.loading = false
-              this.$router.push({ path: '/' })
+              this.loading = false;
+              this.$router.push({ path: "/" });
             })
             .catch(() => {
-              this.loading = false
-            })
+              this.loading = false;
+            });
         } else {
-          console.log('error submit!!')
-          return false
+          console.log("error submit!!");
+          return false;
         }
-      })
+      });
     },
     afterQRScan() {
       // const hash = window.location.hash.slice(1)
@@ -157,7 +160,7 @@ export default {
       // }
     }
   }
-}
+};
 </script>
 
 <style rel="stylesheet/scss" lang="scss">

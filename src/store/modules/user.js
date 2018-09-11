@@ -65,7 +65,7 @@ const user = {
         getUserInfo(state.token).then(response => {
           if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
             // reject('error')
-            reject('Incorrect username or password')
+            reject('用户名或密码错误')
           }
           const data = response.data
 

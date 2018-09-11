@@ -64,7 +64,7 @@
           <el-tag :type="scope.row.ExchangeApplication | ExchangeApplicationFilter">{{ scope.row.ExchangeApplication }}</el-tag>
         </template>
       </el-table-column>  
-      <el-table-column :label="$t('myWarehouseReceipt.BatchNumber')" align="center" width="150px" prop="BatchNumber" sortable>
+      <el-table-column label="交易号" align="center" width="150px" prop="BatchNumber" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.BatchNumber }}</span>
         </template>
@@ -96,8 +96,8 @@
       </el-table-column>
       <el-table-column :label="$t('myWarehouseReceipt.Actions')" align="center" width="240px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-            <el-button type="success" size="mini" @click.stop="handleUpdate(scope.row)">批准</el-button>
-            <el-button type="danger" size="mini" @click.stop="handleUpdate(scope.row)">拒绝</el-button>
+            <el-button type="success" size="mini" @click.stop="handleAgree(scope.row)">批准</el-button>
+            <el-button type="danger" size="mini" @click.stop="dialogVisible=true">拒绝</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -106,6 +106,24 @@
       <el-pagination :current-page="listQuery.page" :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" :total="total" background layout="total, sizes, prev, pager, next" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
 
+    <!-- 弹出对话框 -->
+    <el-dialog
+      :visible.sync="dialogVisible">
+      <!--  -->
+      <el-steps :active="true" finish-status="info" align-center>
+        <el-step title="拒绝" icon="el-icon-circle-close-outline"></el-step>
+      </el-steps>
+
+      <div style="width: 600px; margin: 50px auto">
+        <md-input v-model="descriptionOfRefuse">说明（选填）</md-input>
+      </div>
+
+      <span slot="footer">
+        <el-button type="danger" @click="dialogVisible = false">拒绝</el-button>
+      </span>
+
+    </el-dialog>
+
   </div>
 </template>
 
@@ -113,9 +131,13 @@
 import { fetchList } from "@/api/article";
 import waves from "@/directive/waves"; // 水波纹指令
 import { parseTime } from "@/utils";
+import MdInput from "@/components/MDinput";
 
 export default {
   name: "ComplexTable",
+  components: {
+    MdInput
+  },
   directives: {
     waves
   },
@@ -135,6 +157,8 @@ export default {
   },
   data() {
     return {
+      dialogVisible: false,
+      descriptionOfRefuse: null,
       tableKey: 0,
       list: null,
       total: null,
@@ -184,6 +208,13 @@ export default {
     handleCurrentChange(val) {
       this.listQuery.page = val;
       this.getList();
+    },
+    handleAgree(val) {
+        this.$confirm("确认批准？")
+          .then(_ => {
+            // TODO
+          })
+          .catch(_ => {});
     }
   }
 };
