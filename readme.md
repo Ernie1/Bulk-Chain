@@ -2,7 +2,8 @@
   <img width="240" src="src/img/logo.png">
 </p>
 
-[User Manual](manual/manual.md)
+[User Manual](documents/manual.md)
+[Technical Analysis](documents/technic.md)
 
 ## Introduction
 
@@ -20,7 +21,6 @@ npm install
 # develop
 npm run dev
 ```
-
 
 ## Build
 
