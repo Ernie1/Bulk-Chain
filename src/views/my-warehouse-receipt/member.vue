@@ -218,7 +218,7 @@ export default {
   data() {
     return {
       dialogVisibleApplication: false,
-      active: 1,
+      active: 0,
       ruleForm: {
         name: "张三",
         phone: "19900289212",

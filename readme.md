@@ -2,6 +2,8 @@
   <img width="240" src="src/img/logo.png">
 </p>
 
+[User Manual](manual/manual.md)
+
 ## Introduction
 
 A front-end based on [vue-element-admin](http://panjiachen.github.io/vue-element-admin) of a warehouse receipt trading platform.
