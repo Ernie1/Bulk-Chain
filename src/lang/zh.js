@@ -129,7 +129,7 @@ export default {
     theme: '换肤'
   },
   login: {
-    title: '区块链农产品仓单系统',
+    title: 'Bulk Chain 区块链农产品仓单系统',
     logIn: '登录',
     username: '账号',
     password: '密码',

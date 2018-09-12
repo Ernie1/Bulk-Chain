@@ -20,28 +20,28 @@ const userMap = {
     token: 'm',
     introduction: 'Member account',
     avatar: 'http://icons.iconarchive.com/icons/ariil/alphabet/256/Letter-M-icon.png',
-    name: 'Member account'
+    name: '会员用户'
   },
   e: {
     roles: ['exchange'],
     token: 'e',
     introduction: 'Exchange account',
     avatar: 'http://icons.iconarchive.com/icons/ariil/alphabet/256/Letter-E-icon.png',
-    name: 'Exchange account'
+    name: '交易所用户'
   },
   s: {
     roles: ['storage'],
     token: 's',
     introduction: 'Storage account',
     avatar: 'http://icons.iconarchive.com/icons/ariil/alphabet/256/Letter-S-icon.png',
-    name: 'Storage account'
+    name: '仓库用户'
   },
   b: {
     roles: ['bank'],
     token: 'b',
     introduction: 'Bank account',
     avatar: 'http://icons.iconarchive.com/icons/ariil/alphabet/256/Letter-B-icon.png',
-    name: 'Bank account'
+    name: '银行用户'
   }
 }
 

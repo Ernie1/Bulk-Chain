@@ -13,17 +13,21 @@
       highlight-current-row
       style="width: 100%;"
       @row-click="dialogVisible=true">
-      <el-table-column label="申请编号" align="center" width="300px">
+      <!-- <el-table-column label="申请编号" align="center" width="300px"> -->
+      <el-table-column :label="$t('myWarehouseReceipt.BatchNumber')" align="center" width="300px" prop="BatchNumber" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.BatchNumber }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="申请日期" width="300px" align="center">
+      <!-- <el-table-column label="申请日期" width="300px" align="center"> -->
+      <el-table-column :label="$t('myWarehouseReceipt.DateOfIssue')" width="300px" align="center" prop="DateOfIssue" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.DateOfIssue | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" class-name="status-col" width="300px">
+      <!-- <el-table-column label="状态" class-name="status-col" width="300px"> -->
+
+      <el-table-column :label="$t('myWarehouseReceipt.Status')" class-name="status-col" width="300px"  prop="Status" :filters="[{ text: $t('myWarehouseReceipt.Inbound'), value: 'Inbound' }, { text: $t('myWarehouseReceipt.Flowable'), value: 'Flowable' }, { text: $t('myWarehouseReceipt.Pledged'), value: 'Pledged' }, { text: $t('myWarehouseReceipt.Outbound'), value: 'Outbound' }, { text: $t('myWarehouseReceipt.Outbounding'), value: 'Outbounding' }, { text: $t('myWarehouseReceipt.Registering'), value: 'Registering' }, { text: $t('myWarehouseReceipt.Pledging'), value: 'Pledging' }, { text: $t('myWarehouseReceipt.Unpledging'), value: 'Unpledging' }, { text: $t('myWarehouseReceipt.Unregistering'), value: 'Unregistering' }, { text: $t('myWarehouseReceipt.Deliverying'), value: 'Deliverying' }]" :filter-method="filterStatus">
         <template slot-scope="scope">
           <el-tag :type="scope.row.Status | statusFilter">{{ scope.row.Status }}</el-tag>
         </template>

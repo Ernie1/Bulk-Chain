@@ -4,6 +4,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
+        <img src="../../img/logo.jpg" alt="Bulk Chain" width="60" height="60">
         <h3 class="title">{{ $t('login.title') }}</h3>
         <!-- <lang-select class="set-language"/> -->
       </div>
@@ -220,16 +221,18 @@ $light_gray: #eee;
   height: 100%;
   width: 100%;
   // background-color: $bg;
-  background-image: linear-gradient(
-    to bottom right,
-    rgb(28, 35, 48),
-    rgb(141, 194, 209)
-  );
+  // background-image: linear-gradient(
+  //   to bottom right,
+  //   rgb(28, 35, 48),
+  //   rgb(141, 194, 209)
+  // );
+  background-image: url('../../img/bg_2.jpg');
+  
   .login-form {
     position: absolute;
     left: 0;
     right: 0;
-    width: 520px;
+    width: 540px;
     padding: 35px 35px 15px 35px;
     margin: 290px auto;
   }
@@ -255,10 +258,12 @@ $light_gray: #eee;
   }
   .title-container {
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
     .title {
       font-size: 26px;
       color: $light_gray;
-      margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
     }
