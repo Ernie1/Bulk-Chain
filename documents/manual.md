@@ -40,38 +40,57 @@ Bulk Chain 面向各大交易所大宗农产品仓单交易，在系统上可进
 
 ### 主页
 用户登录后进入主页，主页显示用户身份，用户可退出登录。
+
 ![dashboard](dashboard.png)
+
 用户可通过左侧侧边栏打开不同的业务界面。
 
 ### 申请仓单
 在申请仓单页面，会员用户可看到申请仓单历史列表。
+
 ![application](application.png)
+
 可填写入库申请。
+
 ![application1](application1.png)
+
 提交申请后，相应的仓库收到申请时能够看到以上申请信息，并填写相应的审核信息。会员可随时查看申请详情。
+
 ![application2](application2.png)
+
 ![application3](application3.png)
+
 如果申请通过，会员需要前往仓库入库，仓库将对入库信息进行登记。
+
 ![application4](application4.png)
+
 仓库对货物的数量和质量等信息进行核对并完成入库登记后，系统生成相应的仓单。
+
 ![application5](application5.png)
 
 ### 我的仓单
 ![my-warehouse-receipt](my-warehouse-receipt.png)
+
 在我的仓单页面，会员用户可查看持有仓单的相关信息，可通过表头排序或筛选指定字段。
+
 <p align="center">
   <img width="200" src="filter.png">
 </p>
 
 可对不同状态的仓单进行特定的操作，操作流程与申请仓单类似。
+
 ![register-edit](register-edit.png)
+
 ![register](register.png)
 
 ### 我的客户
 我的客户页面列举了会员的客户。
+
 ![client](client.png)
 
 ## 交易所、仓库、银行用户操作
 虽然不同用户的业务和功能不同，但在内容呈现和操作上与会员用户类似，这里不再赘述。
+
 ![exchange-application](exchange-application.png)
+
 ![refuse](refuse.png)
