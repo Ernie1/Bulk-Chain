@@ -1,9 +1,11 @@
 <p align="center">
   <img width="240" src="src/img/logo.png">
+  <p align="center">
+    <a href="documents/manual.md">User Manual</a>
+    <span>&nbsp;|&nbsp;</span>
+    <a href="documents/technic.md">Technical Analysis</a>
+  </p>
 </p>
-
-[User Manual](documents/manual.md)
-[Technical Analysis](documents/technic.md)
 
 ## Introduction
 
