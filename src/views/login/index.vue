@@ -4,7 +4,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <img src="../../img/logo.jpg" alt="Bulk Chain" width="60" height="60">
+        <img src="../../img/logo.png" alt="Bulk Chain" width="40" height="40">
         <h3 class="title">{{ $t('login.title') }}</h3>
         <!-- <lang-select class="set-language"/> -->
       </div>
