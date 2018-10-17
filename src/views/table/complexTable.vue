@@ -239,7 +239,7 @@ export default {
     },
     handleModifyStatus(row, status) {
       this.$message({
-        message: '操作成功',
+        message: '操作',
         type: 'success'
       })
       row.status = status

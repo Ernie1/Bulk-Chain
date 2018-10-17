@@ -67,12 +67,13 @@
 import { isvalidUsername } from "@/utils/validate";
 // import LangSelect from '@/components/LangSelect'
 import SocialSign from "./socialsignin";
+import { Message } from "element-ui";
 
 export default {
   name: "Login",
-  components: { 
-    // LangSelect, 
-    SocialSign 
+  components: {
+    // LangSelect,
+    SocialSign
   },
   data() {
     const validateUsername = (rule, value, callback) => {
@@ -132,8 +133,9 @@ export default {
               this.loading = false;
               this.$router.push({ path: "/" });
             })
-            .catch(() => {
+            .catch(err => {
               this.loading = false;
+              Message.error(err);
             });
         } else {
           console.log("error submit!!");
@@ -225,8 +227,8 @@ $light_gray: #eee;
   //   rgb(28, 35, 48),
   //   rgb(141, 194, 209)
   // );
-  background-image: url('../../img/bg_2.jpg');
-  
+  background-image: url("../../img/bg_2.jpg");
+
   .login-form {
     position: absolute;
     left: 0;
