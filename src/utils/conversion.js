@@ -38,6 +38,7 @@ export function frontToBackReceipt(ruleForm) {
   }
 }
 
+
 export function backToFrontReceipt(ruleForm) {
   return {
     TransactionId: ruleForm.TransactionId || null,

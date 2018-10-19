@@ -28,14 +28,13 @@ export function requestInbound(ruleForm) {
 
 export function queryRequests() {
   const mid = store.getters.id
-  const usertype_mem = "Member"
-  const requestsType_mem = "InboundRequest"
+  const usertype = "Member"
+  const requestsType = "InboundRequest"
   var queryMyRequests = {}
   queryMyRequests.token = getToken()
   queryMyRequests.fcn = "queryMyRequests"
   queryMyRequests.peers = ["peer1"]
-  queryMyRequests.args = [mid, usertype_mem, requestsType_mem]
-  console.log(queryMyRequests)
+  queryMyRequests.args = [mid, usertype, requestsType]
   return request({
     url: '/channels/mychannel/chaincodes/mycc/query',
     method: 'post',
@@ -44,11 +43,33 @@ export function queryRequests() {
   })
 }
 
-export function getUserInfo(token) {
+export function queryMyWarehouseReceipts() {
+  const mid = store.getters.id
+  const usertype = "Member"
+  const requestsType = "*"
+  var query = {}
+  query.token = getToken()
+  query.fcn = "queryMyWarehouseReceipts"
+  query.peers = ["peer1"]
+  query.args = [mid, usertype, requestsType]
   return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
+    url: '/channels/mychannel/chaincodes/mycc/query',
+    method: 'post',
+    data: query,
+    dataType: 'json'
   })
 }
 
+export function queryWarehouseReceiptTransactionHistory(seriesId) {
+  var query = {}
+  query.token = getToken()
+  query.fcn = "queryWarehouseReceiptTransactionHistory"
+  query.peers = ["peer1"]
+  query.args = [seriesId]
+  return request({
+    url: '/channels/mychannel/chaincodes/mycc/query',
+    method: 'post',
+    data: query,
+    dataType: 'json'
+  })
+}

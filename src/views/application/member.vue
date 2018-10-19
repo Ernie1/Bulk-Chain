@@ -25,7 +25,7 @@
       </el-table-column>
       <el-table-column label="状态" class-name="status-col" width="300px">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.CheckState | statusFilter">{{ scope.row.CheckState | status2CHFilter }}</el-tag>
+          <el-tag :type="scope.row.CheckState | appStatus2ColorFilter">{{ scope.row.CheckState | appStatus2CHFilter }}</el-tag>
         </template>
       </el-table-column>
     </el-table>
@@ -328,27 +328,11 @@ export default {
     MdInput
   },
   filters: {
-    statusFilter(status) {
-      const statusMap = {
-        Checking: "primary",
-        Resolved: "warning",
-        Rejected: "danger",
-        Finished: "success"
-      };
-      return statusMap[status] || "success";
-    },
-    status2CHFilter(status) {
-      const statusMap = {
-        Checking: "审核中",
-        Resolved: "货物待入库",
-        Rejected: "审核失败",
-        Finished: "生成仓单"
-      };
-      return statusMap[status] || "success";
-    }
+    
   },
   data() {
     return {
+      total: 0,
       tableKey: 0,
       list: null,
       listLoading: true,
@@ -451,12 +435,11 @@ export default {
           const temp = JSON.parse(response.data.message);
           var myInboundRequests_mem = [];
           var total = temp.length;
-          console.log(temp);
           for (var i = 0; i < total; i++) {
             var request = JSON.parse(temp[i]);
             myInboundRequests_mem[i] = backToFrontReceipt(request);
           }
-          console.log(myInboundRequests_mem);
+          // console.log(myInboundRequests_mem);
           this.list = myInboundRequests_mem;
           this.total = total;
           this.listLoading = false;
@@ -472,7 +455,7 @@ export default {
         case "Resolved":
           this.active = 2;
           break;
-        case "success":
+        case "Finished":
           this.active = 3;
           break;
         default:
@@ -497,7 +480,7 @@ export default {
               if (!response.data.success) reject(response.data.message);
               Message.success("提交成功！");
               this.dialogVisible = false;
-              // TODO: 刷新
+              this.getList();
             })
             .catch(error => {
               Message.error(error);
