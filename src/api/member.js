@@ -73,3 +73,20 @@ export function queryWarehouseReceiptTransactionHistory(seriesId) {
     dataType: 'json'
   })
 }
+
+export function memberRequest(fcn, form) {
+  var req = {}
+  req.token = getToken()
+  req.fcn = fcn
+  req.peers = ["peer1"]
+  form.MemberId = store.getters.id
+  form.MemberName = store.getters.name
+  form.DateRequest = parseTime(new Date(), '{y}-{m}-{d}')
+  req.args = [JSON.stringify(form)]
+  return request({
+    url: '/channels/mychannel/chaincodes/mycc/invoke',
+    method: 'post',
+    data: req,
+    dataType: 'json'
+  })
+}

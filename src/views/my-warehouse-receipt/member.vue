@@ -136,7 +136,7 @@
           <span>{{ scope.row.Quality }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('myWarehouseReceipt.Variety')" align="center"prop="VarietyCode" :filters="[{text: 'WH', value: 'WH'}, {text: 'CF', value: 'CF'}, {text: 'SR', value: 'SR'}, {text: 'OI', value: 'OI'}, {text: 'RI', value: 'RI'}, {text: 'PM', value: 'PM'}, {text: 'RS', value: 'RS'}, {text: 'JR', value: 'JR'}]" :filter-method="filterVariety">
+      <el-table-column :label="$t('myWarehouseReceipt.Variety')" align="center" prop="VarietyCode" :filters="[{text: 'WH', value: 'WH'}, {text: 'CF', value: 'CF'}, {text: 'SR', value: 'SR'}, {text: 'OI', value: 'OI'}, {text: 'RI', value: 'RI'}, {text: 'PM', value: 'PM'}, {text: 'RS', value: 'RS'}, {text: 'JR', value: 'JR'}]" :filter-method="filterVariety">
         <template slot-scope="scope">
           <span>{{ scope.row.VarietyCode }}</span>
         </template>
@@ -156,11 +156,11 @@
           <el-tag>{{ scope.row.State | rcptStatus2CHFilter }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('myWarehouseReceipt.Actions')" align="center" min-width="180px" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('myWarehouseReceipt.Actions')" align="center" min-width="200px" class-name="small-padding fixed-width">
         <template slot-scope="scope">
 
           <template v-if="scope.row.State=='Inbound'">
-            <el-button type="success" size="mini" @click.stop="dialogVisibleApplication=true">{{ $t('myWarehouseReceipt.Register') }}</el-button>
+            <el-button type="success" size="mini" @click.stop="hanleRegister(scope.row)">{{ $t('myWarehouseReceipt.Register') }}</el-button>
             <el-button type="info" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.ApplyforPick') }}</el-button>
           </template>
 
@@ -183,13 +183,13 @@
     </el-table>
 
     <div class="pagination-container">
-      <el-pagination :current-page="listQuery.page" :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" :total="total" background layout="total, sizes, prev, pager, next" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination :current-page="listQuery.page" :page-sizes="[5,10,20,30]" :page-size="listQuery.limit" :total="total" background layout="total, sizes, prev, pager, next" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
 
     <!-- 弹出对话框 -->
     <el-dialog
       :before-close="handleClose"
-      :visible.sync="dialogVisibleApplication">
+      :visible.sync="dialogVisible">
       <!--  -->
       <el-steps :active="active" finish-status="success" align-center>
         <el-step title="注册申请" icon="el-icon-edit-outline"></el-step>
@@ -197,14 +197,20 @@
       </el-steps>
 
       <div style="width: 600px; margin: 50px auto">
-        <div v-if="active==0" style="display: flex; height: 600px; flex-direction: column; justify-content: space-between; align-items: center;">
-            <md-input v-model="ruleForm.name">会员联系人</md-input>
-            <md-input v-model="ruleForm.phone">会员联系人电话</md-input>
-            <md-input v-model="ruleForm.clientID">客户ID</md-input>
-            <md-input v-model="ruleForm.clientName">客户名称</md-input>
-            <md-input v-model="ruleForm.clientName">客户联系人</md-input>
-            <md-input v-model="ruleForm.clientPhone">客户联系人电话</md-input>
-            <md-input v-model="ruleForm.clientPhone">待注册仓单批次号</md-input>
+        <div v-if="active==0" style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+          <el-form>
+            <el-form-item label="待注册仓单批次号">
+              <span>{{ ruleForm.RegisteringSeriesId }}</span>
+            </el-form-item>
+            <el-form-item>
+              <md-input v-model="ruleForm.MemberContact">会员联系人</md-input>
+              <md-input v-model="ruleForm.MemberContactPhoneNumber">会员联系人电话</md-input>
+              <md-input v-model="ruleForm.ClientID">客户ID</md-input>
+              <md-input v-model="ruleForm.ClientName">客户名称</md-input>
+              <md-input v-model="ruleForm.ClientContact">客户联系人</md-input>
+              <md-input v-model="ruleForm.ClientContactPhoneNumber">客户联系人电话</md-input>
+            </el-form-item>
+          </el-form>
         </div>
 
         <!-- 第2步骤 -->
@@ -251,8 +257,8 @@
 
     <!-- 第1步骤 -->
     <span v-if="active==0" slot="footer">
-      <el-button type="success" @click="dialogVisibleApplication = false">保存</el-button>
-      <el-button type="primary" @click="submitForm('ruleForm')">提交审核</el-button>
+      <el-button type="success" @click="dialogVisible = false">保存</el-button>
+      <el-button type="primary" :loading="ruleFormLoading" @click="submitForm">提交审核</el-button>
     </span>
 
     </el-dialog>
@@ -267,8 +273,10 @@ import { parseTime } from "@/utils";
 import MdInput from "@/components/MDinput";
 import {
   queryMyWarehouseReceipts,
-  queryWarehouseReceiptTransactionHistory
+  queryWarehouseReceiptTransactionHistory,
+  memberRequest
 } from "@/api/member";
+import { Message } from "element-ui";
 
 export default {
   name: "ComplexTable",
@@ -283,35 +291,28 @@ export default {
   },
   data() {
     return {
-      dialogVisibleApplication: false,
+      dialogVisible: false,
       active: 0,
       ruleForm: {
-        name: "张三",
-        phone: "19900289212",
-        clientID: "client_000001",
-        clientCompany: "A农产品加工有限公司",
-        clientName: "莉莉丝",
-        clientPhone: "19900289212",
-        goodsVariety: "WH",
-        goodsQuantity: "200手",
-        goodsLevel: "A",
-        goodsRegion: "河南",
-        goodsTransport: "货车",
-        goodsProduceDate: "",
-        goodsValidityPeriod: "",
-        goodsBand: "",
-        goodsPack: "",
-        goodsRank: "",
-        warehouseID: "",
-        inboundPlanTime: ""
+        MemberId: "",
+        MemberName: "",
+        MemberContact: "",
+        MemberContactPhoneNumber: "",
+        ClientId: "",
+        ClientName: "",
+        ClientContact: "",
+        ClientContactPhoneNumber: "",
+        RegisteringSeriesId: ""
       },
       tableKey: 0,
       list: null,
+      myInboundRequests: null,
       total: 0,
       listLoading: true,
+      ruleFormLoading: false,
       listQuery: {
         page: 1,
-        limit: 10
+        limit: 20
       }
     };
   },
@@ -337,13 +338,13 @@ export default {
       this.$refs.multipleTable.toggleRowExpansion(row);
     },
     filterVariety(value, row) {
-      return row.Variety == value;
+      return row.VarietyCode == value;
     },
     filterType(value, row) {
       return row.Type == value;
     },
     filterStatus(value, row) {
-      return row.Status == value;
+      return row.State == value;
     },
     getList() {
       this.listLoading = true;
@@ -351,8 +352,9 @@ export default {
         .then(response => {
           const myInboundRequests = JSON.parse(response.data.message);
           // console.log(myInboundRequests);
-          this.list = myInboundRequests;
           this.total = myInboundRequests.length;
+          this.myInboundRequests = myInboundRequests;
+          this.handleCurrentChange(this.listQuery.page);
           this.listLoading = false;
         })
         .catch(error => {
@@ -378,11 +380,14 @@ export default {
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
-      this.getList();
+      this.handleCurrentChange(1);
     },
     handleCurrentChange(val) {
       this.listQuery.page = val;
-      this.getList();
+      this.list = this.myInboundRequests.slice(
+        this.listQuery.limit * (this.listQuery.page - 1),
+        this.listQuery.limit * (this.listQuery.page - 1) + this.listQuery.limit
+      );
     },
     handleClose(done) {
       if (this.active != 0) done();
@@ -392,6 +397,31 @@ export default {
             done();
           })
           .catch(_ => {});
+    },
+    hanleRegister(row) {
+      for (var k in this.ruleForm) {
+        this.ruleForm[k] = "";
+      }
+      this.ruleForm.TxType = "RegisterRequest";
+      this.ruleForm.RegisteringSeriesId = row.WarehouseReceiptSeriesId;
+      this.ruleForm.RegisteringQuantity = row.GoodsQuantity;
+      this.dialogVisible = true;
+    },
+    submitForm() {
+      this.ruleFormLoading = true;
+      memberRequest("sendRegisterRequest", this.ruleForm)
+        .then(response => {
+          if (!response.data.success) throw new Error(response.data.message);
+          this.ruleFormLoading = false;
+          Message.success("提交成功！");
+          this.dialogVisible = false;
+          this.getList();
+        })
+        .catch(error => {
+          this.ruleFormLoading = false;
+          console.log(error);
+          Message.error('提交失败！');
+        });
     }
   }
 };

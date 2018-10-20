@@ -66,7 +66,7 @@ export function rcptStatus2CHFilter(status) {
     Inbound: "入库完成",
     Flowable: "可流转",
     Pledged: "已质押",
-    Outbound: "已出库",
+    Outbounded: "已出库",
     Outbounding: "出库审核中",
     Registering: "注册审核中",
     Pledging: "质押审核中",

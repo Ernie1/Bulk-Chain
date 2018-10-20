@@ -2,7 +2,7 @@
   <div class="app-container" style="width: 1000px; margin: 0 auto;">
 
     <!-- 按钮 -->
-    <el-button style="margin-bottom: 30px;" type="primary" icon="el-icon-edit" @click="active=0;dialogVisible=true;">填写新申请</el-button>
+    <el-button style="margin-bottom: 30px;" type="primary" icon="el-icon-edit" @click="handleNewRequest">填写新申请</el-button>
     
     <!-- 申请列表 -->
     <el-table
@@ -305,7 +305,7 @@
     <!-- 第1步骤 -->
     <span v-if="active==0" slot="footer">
       <el-button type="success" @click="dialogVisible = false">保存</el-button>
-      <el-button type="primary" @click="submitForm('ruleForm')">提交审核</el-button>
+      <el-button type="primary" :loading="ruleFormLoading" @click="submitForm('ruleForm')">提交审核</el-button>
     </span>
 
     </el-dialog>
@@ -327,42 +327,42 @@ export default {
   components: {
     MdInput
   },
-  filters: {
-    
-  },
+  filters: {},
   data() {
     return {
       total: 0,
       tableKey: 0,
       list: null,
+      myInboundRequests: null,
       listLoading: true,
+      ruleFormLoading: false,
       listQuery: {
         page: 1,
         limit: 10
       },
       dialogVisible: false,
       active: 1,
+      // ruleForm: {
+      //   name: "张三",
+      //   phone: "19900289212",
+      //   clientID: "client_000001",
+      //   clientCompany: "A农产品加工有限公司",
+      //   clientName: "莉莉丝",
+      //   clientPhone: "19900289212",
+      //   goodsVariety: "WH",
+      //   goodsQuantity: "200",
+      //   goodsLevel: "A",
+      //   goodsRegion: "河南",
+      //   goodsTransport: "货车",
+      //   goodsProduceDate: "2018-10-01",
+      //   goodsValidityPeriod: "2019-10-01",
+      //   goodsBand: "",
+      //   goodsPack: "",
+      //   goodsRank: "",
+      //   warehouseID: "CCMID",
+      //   inboundPlanTime: "2018-10-10"
+      // },
       ruleForm: {
-        name: "张三",
-        phone: "19900289212",
-        clientID: "client_000001",
-        clientCompany: "A农产品加工有限公司",
-        clientName: "莉莉丝",
-        clientPhone: "19900289212",
-        goodsVariety: "WH",
-        goodsQuantity: "200",
-        goodsLevel: "A",
-        goodsRegion: "河南",
-        goodsTransport: "货车",
-        goodsProduceDate: "2018-10-01",
-        goodsValidityPeriod: "2019-10-01",
-        goodsBand: "",
-        goodsPack: "",
-        goodsRank: "",
-        warehouseID: "CCMID",
-        inboundPlanTime: "2018-10-10"
-      },
-      ruleFormOrigin: {
         name: "",
         phone: "",
         clientID: "",
@@ -433,14 +433,15 @@ export default {
       queryRequests()
         .then(response => {
           const temp = JSON.parse(response.data.message);
-          var myInboundRequests_mem = [];
+          var myInboundRequests = [];
           var total = temp.length;
           for (var i = 0; i < total; i++) {
             var request = JSON.parse(temp[i]);
-            myInboundRequests_mem[i] = backToFrontReceipt(request);
+            myInboundRequests[i] = backToFrontReceipt(request);
           }
-          // console.log(myInboundRequests_mem);
-          this.list = myInboundRequests_mem;
+          // console.log(myInboundRequests);
+          this.myInboundRequests = myInboundRequests;
+          this.handleCurrentChange(this.listQuery.page);
           this.total = total;
           this.listLoading = false;
         })
@@ -466,26 +467,33 @@ export default {
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
-      this.getList();
+      this.handleCurrentChange(1);
     },
     handleCurrentChange(val) {
       this.listQuery.page = val;
-      this.getList();
+      this.list = this.myInboundRequests.slice(
+        this.listQuery.limit * (this.listQuery.page - 1),
+        this.listQuery.limit * (this.listQuery.page - 1) + this.listQuery.limit
+      );
     },
     submitForm(formName) {
+      this.ruleFormLoading = true;
       this.$refs[formName].validate(valid => {
         if (valid) {
           requestInbound(this.ruleForm)
             .then(response => {
-              if (!response.data.success) reject(response.data.message);
+              if (!response.data.success) throw new Error(response.data.message);
+              this.ruleFormLoading = false;
               Message.success("提交成功！");
               this.dialogVisible = false;
               this.getList();
             })
             .catch(error => {
+              this.ruleFormLoading = false;
               Message.error(error);
             });
         } else {
+          this.ruleFormLoading = false;
           return false;
         }
       });
@@ -498,6 +506,13 @@ export default {
             done();
           })
           .catch(_ => {});
+    },
+    handleNewRequest() {
+      for (var k in this.ruleForm) {
+        this.ruleForm[k] = "";
+      }
+      this.active = 0;
+      this.dialogVisible = true;
     }
   }
 };
