@@ -79,14 +79,14 @@ export function rcptStatus2CHFilter(status) {
 
 export function reqType2CHFilter(status) {
   const statusMap = {
-    InboundRequest: '入库申请',
-    RegisterRequest: '注册申请',
-    RequestDetails: '申请详情',
-    DeliveryRequest: '交割申请',
-    PledgeRequest: '质押申请',
-    UnpledgeRequest: '解押申请',
-    CancellationRequest: '注销申请',
-    OutboundRequest: '出库申请'
+    InboundRequest: '入库',
+    RegisterRequest: '注册',
+    RequestDetails: '申请',
+    DeliveryRequest: '交割',
+    PledgeRequest: '质押',
+    UnpledgeRequest: '解押',
+    CancellationRequest: '注销',
+    OutboundRequest: '出库'
   };
   return statusMap[status] || status;
 }

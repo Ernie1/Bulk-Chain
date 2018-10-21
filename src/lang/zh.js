@@ -112,7 +112,7 @@ export default {
 
     Actions: "操作",
     Register: "注册",
-    ApplyforPick: "申请提货",
+    ApplyforPick: "提货",
     Pledge: "质押",
     Flow: "流转",
     Unregister: "注销",

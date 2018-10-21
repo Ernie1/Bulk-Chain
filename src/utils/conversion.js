@@ -40,12 +40,12 @@ export function frontToBackReceipt(ruleForm) {
 
 
 export function backToFrontReceipt(ruleForm) {
-  return {
-    TransactionId: ruleForm.TransactionId || null,
-    TxType: null,
-    MemberId: null,
-    MemberName: null,
-    DateRequest: ruleForm.DateRequest || null,
+  return Object.assign({
+    // TransactionId: ruleForm.TransactionId || null,
+    // TxType: null,
+    // MemberId: null,
+    // MemberName: null,
+    // DateRequest: ruleForm.DateRequest || null,
     name: ruleForm.MemberContact || null,
     phone: ruleForm.MemberContactPhoneNumber || null,
     clientID: ruleForm.ClientId || null,
@@ -63,16 +63,16 @@ export function backToFrontReceipt(ruleForm) {
     goodsValidityPeriod: ruleForm.GoodsListRequested[0].ValidDate || null,
     goodsTransport: ruleForm.ModeOfTransport || null,
     warehouseID: ruleForm.TargetWarehouseId || null,
-    TargetWarehouseName: null,
+    // TargetWarehouseName: null,
     inboundPlanTime: ruleForm.DateInPlan || null,
-    DateCheck: null,
+    // DateCheck: null,
     CheckState: ruleForm.CheckState || null,
-    GoodsListPermitted: [],
-    DatePermitted: null,
-    Description: null,
-    GoodsListIndeed: [],
-    DateIndeed: null,
-    WarehouseReceipts: [],
-    DateCreate: null
-  }
+    // GoodsListPermitted: [],
+    // DatePermitted: null,
+    // Description: null,
+    // GoodsListIndeed: [],
+    // DateIndeed: null,
+    // WarehouseReceipts: [],
+    // DateCreate: null
+  }, ruleForm);
 }

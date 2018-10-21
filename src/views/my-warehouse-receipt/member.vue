@@ -160,8 +160,8 @@
         <template slot-scope="scope">
 
           <template v-if="scope.row.State=='Inbound'">
-            <el-button type="success" size="mini" @click.stop="hanleRegister(scope.row)">{{ $t('myWarehouseReceipt.Register') }}</el-button>
-            <el-button type="info" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.ApplyforPick') }}</el-button>
+            <el-button type="success" size="mini" @click.stop="handleRequest(scope.row, 'RegisterRequest')">{{ $t('myWarehouseReceipt.Register') }}</el-button>
+            <el-button type="info" size="mini" @click.stop="handleRequest(scope.row, 'OutboundRequest')">{{ $t('myWarehouseReceipt.ApplyforPick') }}</el-button>
           </template>
 
           <template v-if="scope.row.State=='Flowable'">
@@ -171,7 +171,7 @@
           </template>
 
           <template v-if="scope.row.State.substr(scope.row.State.length - 3)=='ing'">
-            <el-button type="primary" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.ViewProgress') }}</el-button>
+            <el-button type="primary" size="mini" @click.stop="handleViewProgress(scope.row)">{{ $t('myWarehouseReceipt.ViewProgress') }}</el-button>
           </template>
 
           <template v-if="scope.row.State=='Pledged'">
@@ -192,23 +192,24 @@
       :visible.sync="dialogVisible">
       <!--  -->
       <el-steps :active="active" finish-status="success" align-center>
-        <el-step title="注册申请" icon="el-icon-edit-outline"></el-step>
+        <el-step :title="reqType2CHFilter(requestType)+'申请'" icon="el-icon-edit-outline"></el-step>
         <el-step title="提交审核" icon="el-icon-upload2"></el-step>
       </el-steps>
 
       <div style="width: 600px; margin: 50px auto">
         <div v-if="active==0" style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
           <el-form>
-            <el-form-item label="待注册仓单批次号">
-              <span>{{ ruleForm.RegisteringSeriesId }}</span>
+            <el-form-item :label="'待'+reqType2CHFilter(requestType)+'仓单批次号'">
+              <span>{{ ruleForm.RequestSeriesId }}</span>
             </el-form-item>
             <el-form-item>
               <md-input v-model="ruleForm.MemberContact">会员联系人</md-input>
               <md-input v-model="ruleForm.MemberContactPhoneNumber">会员联系人电话</md-input>
-              <md-input v-model="ruleForm.ClientID">客户ID</md-input>
+              <md-input v-model="ruleForm.ClientId">客户ID</md-input>
               <md-input v-model="ruleForm.ClientName">客户名称</md-input>
               <md-input v-model="ruleForm.ClientContact">客户联系人</md-input>
               <md-input v-model="ruleForm.ClientContactPhoneNumber">客户联系人电话</md-input>
+              <md-input v-if="requestType=='OutboundRequest'" v-model="ruleForm.DateInPlan">预计提货时间</md-input>
             </el-form-item>
           </el-form>
         </div>
@@ -217,13 +218,16 @@
         <el-form v-if="active==1" :model="ruleForm" ref="ruleForm" label label-position="right">
           <div style="display: flex; justify-content: center;">
             <!--  -->
-            <div v-if="false">
-              <h1><i class="el-icon-time"></i> 您的注册申请已提交审核，请耐心等候</h1>
+            <div v-if="ruleForm.CheckState.substr(ruleForm.CheckState.length - 3)=='ing'">
+              <h1><i class="el-icon-time"></i> 您的{{ requestType | reqType2CHFilter }}申请已提交审核，请耐心等候</h1>
             </div>
             <!--  -->
-            <div v-if="true" style="display: flex; align-items: center;">
-              <h1><i class="el-icon-circle-close-outline"></i> 您的注册申请未通过审核</h1>
-              <h2>&nbsp;&nbsp;原因</h2>
+            <div v-else-if="ruleForm.CheckState=='Rejected'" style="display: flex; align-items: center;">
+              <h1><i class="el-icon-circle-close-outline"></i> 您的{{ requestType | reqType2CHFilter }}申请未通过审核</h1>
+              <h2>&nbsp;&nbsp;{{ ruleForm.Description }}</h2>
+            </div>
+            <div v-else>
+              <h1><i class="el-icon-circle-check-outline"></i> 您的{{ requestType | reqType2CHFilter }}申请已审核通过</h1>
             </div>
           </div>
         </el-form>
@@ -231,26 +235,26 @@
         <!-- 申请表详情 -->
         <el-form v-if="active!=0" :model="ruleForm" ref="ruleForm" label label-position="left">
           <div style="height: 50px"></div>
+          <el-form-item label="交易号">
+            <span>{{ ruleForm.TransactionId }}</span>
+          </el-form-item>
           <el-form-item label="会员联系人">
-            <span>{{ ruleForm.name }}</span>
+            <span>{{ ruleForm.MemberContact }}</span>
           </el-form-item>
           <el-form-item label="会员联系人电话">
-            <span>{{ ruleForm.phone }}</span>
+            <span>{{ ruleForm.MemberContactPhoneNumber }}</span>
           </el-form-item>
           <el-form-item label="客户ID">
-            <span>{{ ruleForm.clientID }}</span>
+            <span>{{ ruleForm.ClientId }}</span>
           </el-form-item>
           <el-form-item label="客户名称">
-            <span>{{ ruleForm.clientName }}</span>
+            <span>{{ ruleForm.ClientName }}</span>
           </el-form-item>
           <el-form-item label="客户联系人">
-            <span>{{ ruleForm.clientName }}</span>
+            <span>{{ ruleForm.ClientContact }}</span>
           </el-form-item>
           <el-form-item label="客户联系人电话">
-            <span>{{ ruleForm.clientPhone }}</span>
-          </el-form-item>
-          <el-form-item label="待注册仓单批次号">
-            <span>{{ ruleForm.clientPhone }}</span>
+            <span>{{ ruleForm.ClientContactPhoneNumber }}</span>
           </el-form-item>
         </el-form>
       </div>
@@ -277,6 +281,7 @@ import {
   memberRequest
 } from "@/api/member";
 import { Message } from "element-ui";
+import { reqType2CHFilter } from "@/filters";
 
 export default {
   name: "ComplexTable",
@@ -302,7 +307,7 @@ export default {
         ClientName: "",
         ClientContact: "",
         ClientContactPhoneNumber: "",
-        RegisteringSeriesId: ""
+        RequestSeriesId: ""
       },
       tableKey: 0,
       list: null,
@@ -310,6 +315,7 @@ export default {
       total: 0,
       listLoading: true,
       ruleFormLoading: false,
+      requestType: "",
       listQuery: {
         page: 1,
         limit: 20
@@ -320,6 +326,7 @@ export default {
     this.getList();
   },
   methods: {
+    reqType2CHFilter,
     seeDetail(row, event, column) {
       row.transHisListLoading = true;
       queryWarehouseReceiptTransactionHistory(row.WarehouseReceiptSeriesId)
@@ -328,7 +335,8 @@ export default {
           for (var i = 0; i < TransactionHistory.length; i++) {
             TransactionHistory[i] = JSON.parse(TransactionHistory[i]);
           }
-          row.TransactionHistory = TransactionHistory;
+          row.TransactionHistory = TransactionHistory.reverse();
+          // console.log(TransactionHistory);
           row.transHisListLoading = false;
         })
         .catch(error => {
@@ -398,18 +406,25 @@ export default {
           })
           .catch(_ => {});
     },
-    hanleRegister(row) {
+    handleRequest(row, requestType) {
       for (var k in this.ruleForm) {
         this.ruleForm[k] = "";
       }
-      this.ruleForm.TxType = "RegisterRequest";
-      this.ruleForm.RegisteringSeriesId = row.WarehouseReceiptSeriesId;
-      this.ruleForm.RegisteringQuantity = row.GoodsQuantity;
+      this.ruleForm.TxType = requestType;
+      this.ruleForm.RequestSeriesId = row.WarehouseReceiptSeriesId;
+      if (requestType == "RegisterRequest") {
+        this.ruleForm.RegisteringSeriesId = row.WarehouseReceiptSeriesId;
+        this.ruleForm.RegisteringQuantity = row.GoodsQuantity;
+      } else if (requestType == "OutboundRequest") {
+        this.ruleForm.OutboundingSeriesId = row.WarehouseReceiptSeriesId;
+      }
+      this.active = 0;
+      this.requestType = requestType;
       this.dialogVisible = true;
     },
     submitForm() {
       this.ruleFormLoading = true;
-      memberRequest("sendRegisterRequest", this.ruleForm)
+      memberRequest("send" + this.requestType, this.ruleForm)
         .then(response => {
           if (!response.data.success) throw new Error(response.data.message);
           this.ruleFormLoading = false;
@@ -420,7 +435,24 @@ export default {
         .catch(error => {
           this.ruleFormLoading = false;
           console.log(error);
-          Message.error('提交失败！');
+          Message.error("提交失败！");
+        });
+    },
+    handleViewProgress(row) {
+      queryWarehouseReceiptTransactionHistory(row.WarehouseReceiptSeriesId)
+        .then(response => {
+          const TransactionHistory = JSON.parse(response.data.message);
+          Object.assign(
+            this.ruleForm,
+            JSON.parse(TransactionHistory[TransactionHistory.length - 1])
+          );
+          console.log(this.ruleForm)
+          this.requestType = this.ruleForm.TxType;
+          this.active = 1;
+          this.dialogVisible = true;
+        })
+        .catch(error => {
+          console.log(error);
         });
     }
   }
