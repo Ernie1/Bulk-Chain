@@ -85,7 +85,7 @@ export function reqType2CHFilter(status) {
     DeliveryRequest: '交割',
     PledgeRequest: '质押',
     UnpledgeRequest: '解押',
-    CancellationRequest: '注销',
+    UnregisterRequest: '注销',
     OutboundRequest: '出库'
   };
   return statusMap[status] || status;

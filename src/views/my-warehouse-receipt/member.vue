@@ -165,9 +165,9 @@
           </template>
 
           <template v-if="scope.row.State=='Flowable'">
-            <el-button type="warning" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Pledge') }}</el-button>
-            <el-button type="primary" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Flow') }}</el-button>
-            <el-button type="danger" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Unregister') }}</el-button>
+            <el-button type="warning" size="mini" @click.stop="handleRequest(scope.row, 'PledgeRequest')">{{ $t('myWarehouseReceipt.Pledge') }}</el-button>
+            <el-button type="primary" size="mini" @click.stop="handleRequest(scope.row,'DeliveryRequest')">{{ $t('myWarehouseReceipt.Flow') }}</el-button>
+            <el-button type="danger" size="mini" @click.stop="handleRequest(scope.row,'UnregisterRequest')">{{ $t('myWarehouseReceipt.Unregister') }}</el-button>
           </template>
 
           <template v-if="scope.row.State.substr(scope.row.State.length - 3)=='ing'">
@@ -175,7 +175,7 @@
           </template>
 
           <template v-if="scope.row.State=='Pledged'">
-            <el-button type="warning" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
+            <el-button type="warning" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'UnpledgeRequest')">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
           </template>
           
         </template>
@@ -210,6 +210,8 @@
               <md-input v-model="ruleForm.ClientContact">客户联系人</md-input>
               <md-input v-model="ruleForm.ClientContactPhoneNumber">客户联系人电话</md-input>
               <md-input v-if="requestType=='OutboundRequest'" v-model="ruleForm.DateInPlan">预计提货时间</md-input>
+              <md-input v-if="requestType=='PledgeRequest'" v-model="ruleForm.AmountOfMoneyRequest">申请额度</md-input>
+              <md-input v-if="requestType=='PledgeRequest'" v-model="ruleForm.DateDDL">质押期限</md-input>
             </el-form-item>
           </el-form>
         </div>
@@ -261,12 +263,22 @@
 
     <!-- 第1步骤 -->
     <span v-if="active==0" slot="footer">
-      <el-button type="success" @click="dialogVisible = false">保存</el-button>
+      <!-- <el-button type="success" @click="dialogVisible = false">保存</el-button> -->
       <el-button type="primary" :loading="ruleFormLoading" @click="submitForm">提交审核</el-button>
     </span>
 
     </el-dialog>
     
+    <el-dialog
+      title="确认解押？"
+      :visible.sync="UnpledgeRequestVisible"
+      width="30%"
+      >
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="UnpledgeRequestVisible = false">取 消</el-button>
+        <el-button :loading="ruleFormLoading" type="primary" @click="confirmUnpledgeRequest">确 定</el-button>
+      </span>
+    </el-dialog>
 
   </div>
 </template>
@@ -297,6 +309,7 @@ export default {
   data() {
     return {
       dialogVisible: false,
+      UnpledgeRequestVisible: false,
       active: 0,
       ruleForm: {
         MemberId: "",
@@ -307,7 +320,10 @@ export default {
         ClientName: "",
         ClientContact: "",
         ClientContactPhoneNumber: "",
-        RequestSeriesId: ""
+        RequestSeriesId: "",
+        DateInPlan: "",
+        AmountOfMoneyRequest: "",
+        DateDDL: ""
       },
       tableKey: 0,
       list: null,
@@ -406,6 +422,16 @@ export default {
           })
           .catch(_ => {});
     },
+    handleUnpledgeRequest(row) {
+      this.getLastTransactionHistory(row, () => {
+        this.requestType = "UnpledgeRequest";
+        this.UnpledgeRequestVisible = true;
+      });
+    },
+    confirmUnpledgeRequest() {
+      this.ruleForm.UnpledgeRequestDate = parseTime(new Date(), "{y}-{m}-{d}");
+      this.submitForm();
+    },
     handleRequest(row, requestType) {
       for (var k in this.ruleForm) {
         this.ruleForm[k] = "";
@@ -417,6 +443,16 @@ export default {
         this.ruleForm.RegisteringQuantity = row.GoodsQuantity;
       } else if (requestType == "OutboundRequest") {
         this.ruleForm.OutboundingSeriesId = row.WarehouseReceiptSeriesId;
+      } else if (requestType == "PledgeRequest") {
+        this.ruleForm.PledgeType = "Inside";
+        this.ruleForm.PledgingWarehouseReceiptSeriesId =
+          row.WarehouseReceiptSeriesId;
+      } else if (requestType == "DeliveryRequest") {
+        this.ruleForm.DeliveryType = "Seller";
+        this.ruleForm.DeliveryWarehouseReceiptSeriesId =
+          row.WarehouseReceiptSeriesId;
+      } else if (requestType == "UnregisterRequest") {
+        this.ruleForm.UnregisteringSeriesId = row.WarehouseReceiptSeriesId;
       }
       this.active = 0;
       this.requestType = requestType;
@@ -424,6 +460,10 @@ export default {
     },
     submitForm() {
       this.ruleFormLoading = true;
+      if (this.requestType == "PledgeRequest")
+        this.ruleForm.AmountOfMoneyRequest = parseInt(
+          this.ruleForm.AmountOfMoneyRequest
+        );
       memberRequest("send" + this.requestType, this.ruleForm)
         .then(response => {
           if (!response.data.success) throw new Error(response.data.message);
@@ -438,7 +478,7 @@ export default {
           Message.error("提交失败！");
         });
     },
-    handleViewProgress(row) {
+    getLastTransactionHistory(row, callback) {
       queryWarehouseReceiptTransactionHistory(row.WarehouseReceiptSeriesId)
         .then(response => {
           const TransactionHistory = JSON.parse(response.data.message);
@@ -446,14 +486,18 @@ export default {
             this.ruleForm,
             JSON.parse(TransactionHistory[TransactionHistory.length - 1])
           );
-          console.log(this.ruleForm)
-          this.requestType = this.ruleForm.TxType;
-          this.active = 1;
-          this.dialogVisible = true;
+          callback();
         })
         .catch(error => {
           console.log(error);
         });
+    },
+    handleViewProgress(row) {
+      this.getLastTransactionHistory(row, () => {
+        this.requestType = this.ruleForm.TxType;
+        this.active = 1;
+        this.dialogVisible = true;
+      });
     }
   }
 };
