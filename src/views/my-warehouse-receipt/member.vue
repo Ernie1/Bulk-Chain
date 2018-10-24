@@ -175,11 +175,14 @@
           </template>
 
           <template v-if="scope.row.State=='Pledged'">
-            <el-button type="warning" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'UnpledgeRequest')">取消</el-button>
-            <el-button type="success" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'UnpledgeRequest')">确认</el-button>
             <el-button type="danger" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'UnpledgeRequest')">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
           </template>
-          
+
+          <template v-if="scope.row.LastTransactionHistory">
+            <el-button type="warning" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'ConfirmRejected')">取消</el-button>
+            <el-button type="success" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'ConfirmResolved')">确认</el-button>
+          </template>
+           
         </template>
       </el-table-column>
     </el-table>
@@ -272,13 +275,14 @@
     </el-dialog>
     
     <el-dialog
-      title="确认解押？"
+      title="提示"
       :visible.sync="UnpledgeRequestVisible"
       width="30%"
       >
+      <span>{{ requestType=='UnpledgeRequest'?'确认解押？':requestType=='ConfirmRejected'?'取消质押？':'确认质押？' }}</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="UnpledgeRequestVisible = false">取 消</el-button>
-        <el-button :loading="ruleFormLoading" type="primary" @click="confirmUnpledgeRequest">确 定</el-button>
+        <el-button :loading="ruleFormLoading" type="primary" @click="submitUnpledgeRequest">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -377,18 +381,18 @@ export default {
       queryMyWarehouseReceipts()
         .then(response => {
           const myInboundRequests = JSON.parse(response.data.message);
-          // for (let i = 0; i < myInboundRequests.length; ++i) {
-          //   if (myInboundRequests[i].State == "Pledging") {
-          //     this.getLastTransactionHistory(myInboundRequests[i]).then(
-          //       lastTransactionHistory => {
-          //         if (lastTransactionHistory.CheckState == "Resolved")
-          //           myInboundRequests[
-          //             i
-          //           ].LastTransactionHistory = lastTransactionHistory;
-          //       }
-          //     );
-          //   }
-          // }
+          for (let i = 0; i < myInboundRequests.length; ++i) {
+            if (myInboundRequests[i].State == "Pledging") {
+              this.getLastTransactionHistory(myInboundRequests[i]).then(
+                lastTransactionHistory => {
+                  if (lastTransactionHistory.ConfirmState == "Confirming")
+                    myInboundRequests[
+                      i
+                    ].LastTransactionHistory = lastTransactionHistory;
+                }
+              );
+            }
+          }
           this.total = myInboundRequests.length;
           this.myInboundRequests = myInboundRequests;
           this.handleCurrentChange(this.listQuery.page);
@@ -435,15 +439,20 @@ export default {
           })
           .catch(_ => {});
     },
-    handleUnpledgeRequest(row) {
+    handleUnpledgeRequest(row, requestType) {
       this.getLastTransactionHistory(row).then(lastTransactionHistory => {
         Object.assign(this.ruleForm, lastTransactionHistory);
-        this.requestType = "UnpledgeRequest";
+        this.requestType = requestType;
+        this.ruleForm.ConfirmState = requestType;
         this.UnpledgeRequestVisible = true;
       });
     },
-    confirmUnpledgeRequest() {
-      this.ruleForm.UnpledgeRequestDate = parseTime(new Date(), "{y}-{m}-{d}");
+    submitUnpledgeRequest() {
+      if (this.requestType == "UnpledgeRequest")
+        this.ruleForm.UnpledgeRequestDate = parseTime(
+          new Date(),
+          "{y}-{m}-{d}"
+        );
       this.submitForm();
     },
     handleRequest(row, requestType) {
@@ -474,11 +483,18 @@ export default {
     },
     submitForm() {
       this.ruleFormLoading = true;
+      var fcn = "send" + this.requestType;
       if (this.requestType == "PledgeRequest")
         this.ruleForm.AmountOfMoneyRequest = parseInt(
           this.ruleForm.AmountOfMoneyRequest
         );
-      memberRequest("send" + this.requestType, this.ruleForm)
+      if (
+        this.requestType == "ConfirmRejected" ||
+        this.requestType == "ConfirmResolved"
+      ) {
+        fcn = "confirmPledgeRequest";
+      }
+      memberRequest(fcn, this.ruleForm)
         .then(response => {
           if (!response.data.success) throw new Error(response.data.message);
           this.ruleFormLoading = false;
