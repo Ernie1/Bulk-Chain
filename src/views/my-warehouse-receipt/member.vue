@@ -161,7 +161,7 @@
 
           <template v-if="scope.row.State=='Inbound'">
             <el-button type="success" size="mini" @click.stop="handleRequest(scope.row, 'RegisterRequest')">{{ $t('myWarehouseReceipt.Register') }}</el-button>
-            <el-button type="info" size="mini" @click.stop="handleRequest(scope.row, 'OutboundRequest')">{{ $t('myWarehouseReceipt.ApplyforPick') }}</el-button>
+            <el-button type="primary" size="mini" @click.stop="handleRequest(scope.row, 'OutboundRequest')">{{ $t('myWarehouseReceipt.ApplyforPick') }}</el-button>
           </template>
 
           <template v-if="scope.row.State=='Flowable'">
@@ -175,7 +175,9 @@
           </template>
 
           <template v-if="scope.row.State=='Pledged'">
-            <el-button type="warning" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'UnpledgeRequest')">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
+            <el-button type="warning" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'UnpledgeRequest')">取消</el-button>
+            <el-button type="success" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'UnpledgeRequest')">确认</el-button>
+            <el-button type="danger" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'UnpledgeRequest')">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
           </template>
           
         </template>
@@ -375,7 +377,18 @@ export default {
       queryMyWarehouseReceipts()
         .then(response => {
           const myInboundRequests = JSON.parse(response.data.message);
-          // console.log(myInboundRequests);
+          // for (let i = 0; i < myInboundRequests.length; ++i) {
+          //   if (myInboundRequests[i].State == "Pledging") {
+          //     this.getLastTransactionHistory(myInboundRequests[i]).then(
+          //       lastTransactionHistory => {
+          //         if (lastTransactionHistory.CheckState == "Resolved")
+          //           myInboundRequests[
+          //             i
+          //           ].LastTransactionHistory = lastTransactionHistory;
+          //       }
+          //     );
+          //   }
+          // }
           this.total = myInboundRequests.length;
           this.myInboundRequests = myInboundRequests;
           this.handleCurrentChange(this.listQuery.page);
@@ -423,7 +436,8 @@ export default {
           .catch(_ => {});
     },
     handleUnpledgeRequest(row) {
-      this.getLastTransactionHistory(row, () => {
+      this.getLastTransactionHistory(row).then(lastTransactionHistory => {
+        Object.assign(this.ruleForm, lastTransactionHistory);
         this.requestType = "UnpledgeRequest";
         this.UnpledgeRequestVisible = true;
       });
@@ -478,22 +492,23 @@ export default {
           Message.error("提交失败！");
         });
     },
-    getLastTransactionHistory(row, callback) {
-      queryWarehouseReceiptTransactionHistory(row.WarehouseReceiptSeriesId)
-        .then(response => {
-          const TransactionHistory = JSON.parse(response.data.message);
-          Object.assign(
-            this.ruleForm,
-            JSON.parse(TransactionHistory[TransactionHistory.length - 1])
-          );
-          callback();
-        })
-        .catch(error => {
-          console.log(error);
-        });
+    getLastTransactionHistory(row) {
+      return new Promise(function(resolve, reject) {
+        queryWarehouseReceiptTransactionHistory(row.WarehouseReceiptSeriesId)
+          .then(response => {
+            const TransactionHistory = JSON.parse(response.data.message);
+            resolve(
+              JSON.parse(TransactionHistory[TransactionHistory.length - 1])
+            );
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
     },
     handleViewProgress(row) {
-      this.getLastTransactionHistory(row, () => {
+      this.getLastTransactionHistory(row).then(lastTransactionHistory => {
+        Object.assign(this.ruleForm, lastTransactionHistory);
         this.requestType = this.ruleForm.TxType;
         this.active = 1;
         this.dialogVisible = true;

@@ -54,7 +54,7 @@ export function appStatus2ColorFilter(status) {
 export function appStatus2CHFilter(status) {
   const statusMap = {
     Checking: "审核中",
-    Resolved: "货物待入库",
+    Resolved: "审核通过",
     Rejected: "审核失败",
     Finished: "生成仓单"
   };
