@@ -304,7 +304,7 @@
 
     <!-- 第1步骤 -->
     <span v-if="active==0" slot="footer">
-      <el-button type="success" @click="dialogVisible = false">保存</el-button>
+      <!-- <el-button type="success" @click="dialogVisible = false">保存</el-button> -->
       <el-button type="primary" :loading="ruleFormLoading" @click="submitForm('ruleForm')">提交审核</el-button>
     </span>
 
@@ -317,7 +317,8 @@
 import { fetchList } from "@/api/article";
 import { parseTime } from "@/utils";
 import MdInput from "@/components/MDinput";
-import { requestInbound, queryRequests } from "@/api/member";
+import { queryTable } from "@/api/utils";
+import { requestInbound } from "@/api/member";
 import { Message } from "element-ui";
 import { backToFrontReceipt } from "@/utils/conversion";
 
@@ -430,7 +431,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true;
-      queryRequests()
+      queryTable("Member", "InboundRequest", "queryMyRequests")
         .then(response => {
           const temp = JSON.parse(response.data.message);
           var myInboundRequests = [];
@@ -463,8 +464,7 @@ export default {
           this.active = 1;
           break;
       }
-      this.ruleForm = a;
-      console.log(a);
+      this.ruleForm = Object.assign({}, a);
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
@@ -492,7 +492,7 @@ export default {
             })
             .catch(error => {
               this.ruleFormLoading = false;
-              Message.error(error);
+              Message.error("提交失败！");
             });
         } else {
           this.ruleFormLoading = false;

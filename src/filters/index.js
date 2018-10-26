@@ -61,6 +61,25 @@ export function appStatus2CHFilter(status) {
   return statusMap[status] || status;
 }
 
+export function storageCheckState2CHFilter(status) {
+  const statusMap = {
+    Resolved: "审核通过",
+    Rejected: "审核拒绝",
+    Finished: "登记完成"
+  };
+  return statusMap[status] || status;
+}
+
+export function storageTxType2CHFilter(status) {
+  const statusMap = {
+    InboundRequest: "入库",
+    OutboundRequest: "出库"
+  };
+  return statusMap[status] || status;
+}
+
+  
+
 export function rcptStatus2CHFilter(status) {
   const statusMap = {
     Inbound: "入库完成",

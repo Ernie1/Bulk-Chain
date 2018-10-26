@@ -157,22 +157,6 @@ export const asyncRouterMap = [
   },
   // storage
   {
-    path: '/application',
-    component: Layout,
-    meta : { roles: ['storage'] },
-    children: [
-      {
-        path: 'storage',
-        component: () => import('@/views/application/storage'),
-        name: 'Application',
-        meta: {
-          title: '申请列表',
-          icon: 'link'
-        }
-      }
-    ]
-  },
-  {
     path: '/warehouse-receipt-handle',
     component: Layout,
     meta : { roles: ['storage'] },

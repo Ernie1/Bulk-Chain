@@ -1,8 +1,4 @@
-import request from '@/utils/request'
-import { getToken } from '@/utils/auth'
-import store from '@/store'
-import { parseTime } from '@/utils'
-import { frontToBackReceipt } from '@/utils/conversion'
+import { request, getToken, store, parseTime, frontToBackReceipt } from '@/api/utils'
 
 export function requestInbound(ruleForm) {
   var InboundRequest = frontToBackReceipt(ruleForm)
@@ -23,40 +19,6 @@ export function requestInbound(ruleForm) {
     method: 'post',
     data: sendInboundRequest,
     token: getToken()
-  })
-}
-
-export function queryRequests() {
-  const mid = store.getters.id
-  const usertype = "Member"
-  const requestsType = "InboundRequest"
-  var queryMyRequests = {}
-  queryMyRequests.token = getToken()
-  queryMyRequests.fcn = "queryMyRequests"
-  queryMyRequests.peers = ["peer1"]
-  queryMyRequests.args = [mid, usertype, requestsType]
-  return request({
-    url: '/channels/mychannel/chaincodes/mycc/query',
-    method: 'post',
-    data: queryMyRequests,
-    dataType: 'json'
-  })
-}
-
-export function queryMyWarehouseReceipts() {
-  const mid = store.getters.id
-  const usertype = "Member"
-  const requestsType = "*"
-  var query = {}
-  query.token = getToken()
-  query.fcn = "queryMyWarehouseReceipts"
-  query.peers = ["peer1"]
-  query.args = [mid, usertype, requestsType]
-  return request({
-    url: '/channels/mychannel/chaincodes/mycc/query',
-    method: 'post',
-    data: query,
-    dataType: 'json'
   })
 }
 

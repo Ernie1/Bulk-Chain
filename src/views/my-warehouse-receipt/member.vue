@@ -179,7 +179,7 @@
           </template>
 
           <template v-if="scope.row.LastTransactionHistory">
-            <el-button type="warning" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'ConfirmRejected')">取消</el-button>
+            <el-button type="danger" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'ConfirmRejected')">取消</el-button>
             <el-button type="success" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'ConfirmResolved')">确认</el-button>
           </template>
            
@@ -293,8 +293,8 @@
 import { fetchList } from "@/api/article";
 import { parseTime } from "@/utils";
 import MdInput from "@/components/MDinput";
+import { queryTable } from "@/api/utils";
 import {
-  queryMyWarehouseReceipts,
   queryWarehouseReceiptTransactionHistory,
   memberRequest
 } from "@/api/member";
@@ -333,14 +333,14 @@ export default {
       },
       tableKey: 0,
       list: null,
-      myInboundRequests: null,
+      myWarehouseReceipts: null,
       total: 0,
       listLoading: true,
       ruleFormLoading: false,
       requestType: "",
       listQuery: {
         page: 1,
-        limit: 20
+        limit: 5
       }
     };
   },
@@ -378,23 +378,23 @@ export default {
     },
     getList() {
       this.listLoading = true;
-      queryMyWarehouseReceipts()
+      queryTable("Member", "*", "queryMyWarehouseReceipts")
         .then(response => {
-          const myInboundRequests = JSON.parse(response.data.message);
-          for (let i = 0; i < myInboundRequests.length; ++i) {
-            if (myInboundRequests[i].State == "Pledging") {
-              this.getLastTransactionHistory(myInboundRequests[i]).then(
+          const myWarehouseReceipts = JSON.parse(response.data.message);
+          for (let i = 0; i < myWarehouseReceipts.length; ++i) {
+            if (myWarehouseReceipts[i].State == "Pledging") {
+              this.getLastTransactionHistory(myWarehouseReceipts[i]).then(
                 lastTransactionHistory => {
                   if (lastTransactionHistory.ConfirmState == "Confirming")
-                    myInboundRequests[
+                    myWarehouseReceipts[
                       i
                     ].LastTransactionHistory = lastTransactionHistory;
                 }
               );
             }
           }
-          this.total = myInboundRequests.length;
-          this.myInboundRequests = myInboundRequests;
+          this.total = myWarehouseReceipts.length;
+          this.myWarehouseReceipts = myWarehouseReceipts;
           this.handleCurrentChange(this.listQuery.page);
           this.listLoading = false;
         })
@@ -425,7 +425,7 @@ export default {
     },
     handleCurrentChange(val) {
       this.listQuery.page = val;
-      this.list = this.myInboundRequests.slice(
+      this.list = this.myWarehouseReceipts.slice(
         this.listQuery.limit * (this.listQuery.page - 1),
         this.listQuery.limit * (this.listQuery.page - 1) + this.listQuery.limit
       );

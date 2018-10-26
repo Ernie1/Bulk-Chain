@@ -1,9 +1,9 @@
 export function frontToBackReceipt(ruleForm) {
   return {
     TransactionId: ruleForm.TransactionId || null,
-    TxType: null,
-    MemberId: null,
-    MemberName: null,
+    // TxType: null,
+    // MemberId: null,
+    // MemberName: null,
     DateRequest: ruleForm.DateRequest || null,
     MemberContact: ruleForm.name || null,
     MemberContactPhoneNumber: ruleForm.phone || null,
@@ -24,17 +24,17 @@ export function frontToBackReceipt(ruleForm) {
     }],
     ModeOfTransport: ruleForm.goodsTransport || null,
     TargetWarehouseId: ruleForm.warehouseID || null,
-    TargetWarehouseName: null,
+    // TargetWarehouseName: null,
     DateInplan: ruleForm.inboundPlanTime || null,
-    DateCheck: null,
+    // DateCheck: null,
     CheckState: ruleForm.CheckState || null,
-    GoodsListPermitted: [],
-    DatePermitted: null,
-    Description: null,
-    GoodsListIndeed: [],
-    DateIndeed: null,
-    WarehouseReceipts: [],
-    DateCreate: null
+    // GoodsListPermitted: [],
+    // DatePermitted: null,
+    // Description: null,
+    // GoodsListIndeed: [],
+    // DateIndeed: null,
+    // WarehouseReceipts: [],
+    // DateCreate: null
   }
 }
 
