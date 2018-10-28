@@ -61,7 +61,7 @@ export function appStatus2CHFilter(status) {
   return statusMap[status] || status;
 }
 
-export function storageCheckState2CHFilter(status) {
+export function CheckState2CHFilter(status) {
   const statusMap = {
     Resolved: "审核通过",
     Rejected: "审核拒绝",
@@ -70,10 +70,15 @@ export function storageCheckState2CHFilter(status) {
   return statusMap[status] || status;
 }
 
-export function storageTxType2CHFilter(status) {
+export function TxType2CHFilter(status) {
   const statusMap = {
     InboundRequest: "入库",
-    OutboundRequest: "出库"
+    OutboundRequest: "出库",
+    RegisterRequest: "注册",
+    UnregisterRequest: "注销",
+    DeliveryRequest: "交割",
+    PledgeRequest: "质押",
+    UnpledgeRequest: "解押"
   };
   return statusMap[status] || status;
 }

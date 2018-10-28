@@ -32,10 +32,10 @@
             <el-button v-if="scope.row.TxType=='OutboundRequest'" type="success" size="mini" @click.stop="checkOrRegister(scope.row, 'registerOutbound')">出库登记</el-button>
           </template>
           <template v-else-if="scope.row.CheckState=='Checking'">
-            <el-button type="danger" size="mini" @click.stop="checkOrRegister(scope.row, 'check'+scope.row.TxType, 'Rejected')">拒绝{{ scope.row.TxType | storageTxType2CHFilter }}</el-button>
-            <el-button type="success" size="mini" @click.stop="checkOrRegister(scope.row, 'check'+scope.row.TxType, 'Resolved')">批准{{ scope.row.TxType | storageTxType2CHFilter }}</el-button>
+            <el-button type="danger" size="mini" @click.stop="checkOrRegister(scope.row, 'check'+scope.row.TxType, 'Rejected')">拒绝{{ scope.row.TxType | TxType2CHFilter }}</el-button>
+            <el-button type="success" size="mini" @click.stop="checkOrRegister(scope.row, 'check'+scope.row.TxType, 'Resolved')">批准{{ scope.row.TxType | TxType2CHFilter }}</el-button>
           </template>
-          <el-tag v-else :type="scope.row.CheckState | appStatus2ColorFilter">{{ scope.row.TxType | storageTxType2CHFilter }}{{ scope.row.CheckState | storageCheckState2CHFilter }}</el-tag>
+          <el-tag v-else :type="scope.row.CheckState | appStatus2ColorFilter">{{ scope.row.TxType | TxType2CHFilter }}{{ scope.row.CheckState | CheckState2CHFilter }}</el-tag>
         </template>
       </el-table-column>
     </el-table>
@@ -55,18 +55,18 @@
           <div style="display: flex; justify-content: center;">
             <!--  -->
             <div v-if="ruleForm.CheckState == 'Checking'">
-              <h1><i class="el-icon-time"></i> {{ ruleForm.TxType | storageTxType2CHFilter }}申请待审核</h1>
+              <h1><i class="el-icon-time"></i> {{ ruleForm.TxType | TxType2CHFilter }}申请待审核</h1>
             </div>
             <!--  -->
             <div v-if="ruleForm.CheckState == 'Rejected'" style="display: flex; align-items: center;">
-              <h1><i class="el-icon-circle-close-outline"></i> 已拒绝{{ ruleForm.TxType | storageTxType2CHFilter }}申请</h1>
+              <h1><i class="el-icon-circle-close-outline"></i> 已拒绝{{ ruleForm.TxType | TxType2CHFilter }}申请</h1>
               <h2>&nbsp;&nbsp;{{ ruleForm.Description }}</h2>
             </div>
             <div v-if="ruleForm.CheckState == 'Resolved'">
-              <h1><i class="el-icon-circle-check-outline"></i> 已批准{{ ruleForm.TxType | storageTxType2CHFilter }}申请，待{{ ruleForm.TxType | storageTxType2CHFilter }}登记</h1>
+              <h1><i class="el-icon-circle-check-outline"></i> 已批准{{ ruleForm.TxType | TxType2CHFilter }}申请，待{{ ruleForm.TxType | TxType2CHFilter }}登记</h1>
             </div>
             <div v-if="ruleForm.CheckState == 'Finished'">            
-              <h1><i class="el-icon-circle-check-outline"></i> 已完成{{ ruleForm.TxType | storageTxType2CHFilter }}登记</h1>
+              <h1><i class="el-icon-circle-check-outline"></i> 已完成{{ ruleForm.TxType | TxType2CHFilter }}登记</h1>
             </div>
           </div>
           <!--  -->
@@ -324,7 +324,7 @@
           <!-- checkInboundRequest || checkOutboundRequest -->
           <div v-if="fcn=='checkInboundRequest'||fcn=='checkOutboundRequest'">
             <el-form-item prop="DatePermitted">
-              <md-input v-model="ruleForm.DatePermitted">{{ ruleForm.TxType | storageTxType2CHFilter  }}期限</md-input>
+              <md-input v-model="ruleForm.DatePermitted">{{ ruleForm.TxType | TxType2CHFilter  }}期限</md-input>
             </el-form-item>
             <el-form-item prop="Description">
               <md-input v-model="ruleForm.Description">说明</md-input>
@@ -356,7 +356,7 @@
           </div>
           <!-- registerInbound || registerOutbound -->
           <el-form-item v-if="fcn=='registerInbound'||fcn=='registerOutbound'" prop="DateIndeed">
-            <md-input v-model="ruleForm.DateIndeed">{{ ruleForm.TxType | storageTxType2CHFilter }}日期</md-input>
+            <md-input v-model="ruleForm.DateIndeed">{{ ruleForm.TxType | TxType2CHFilter }}日期</md-input>
           </el-form-item>
         </el-form>
 
@@ -365,11 +365,11 @@
         <span slot="footer">
           <!-- checkInboundRequest || checkOutboundRequest -->
           <div v-if="fcn=='checkInboundRequest'||fcn=='checkOutboundRequest'">
-            <el-button v-if="ruleForm.CheckState=='Resolved'" type="success" :loading="ruleFormLoading" @click="submitForm">批准{{ ruleForm.TxType | storageTxType2CHFilter }}</el-button>
-            <el-button v-if="ruleForm.CheckState=='Rejected'" type="danger" :loading="ruleFormLoading" @click="submitForm">拒绝{{ ruleForm.TxType | storageTxType2CHFilter }}</el-button>
+            <el-button v-if="ruleForm.CheckState=='Resolved'" type="success" :loading="ruleFormLoading" @click="submitForm">批准{{ ruleForm.TxType | TxType2CHFilter }}</el-button>
+            <el-button v-if="ruleForm.CheckState=='Rejected'" type="danger" :loading="ruleFormLoading" @click="submitForm">拒绝{{ ruleForm.TxType | TxType2CHFilter }}</el-button>
           </div>
           <!-- registerInbound || registerOutbound -->
-          <el-button v-if="fcn=='registerInbound'||fcn=='registerOutbound'" type="success" :loading="ruleFormLoading" @click="submitForm">登记{{ ruleForm.TxType | storageTxType2CHFilter }}</el-button>
+          <el-button v-if="fcn=='registerInbound'||fcn=='registerOutbound'" type="success" :loading="ruleFormLoading" @click="submitForm">登记{{ ruleForm.TxType | TxType2CHFilter }}</el-button>
         </span>
 
     </el-dialog>
