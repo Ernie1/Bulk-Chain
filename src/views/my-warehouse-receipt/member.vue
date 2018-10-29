@@ -1,5 +1,8 @@
 <template>
   <div class="app-container">
+    
+    <el-button style="margin-bottom: 30px;" type="primary" icon="el-icon-edit" @click="handleBuyRequest">填写买入申请</el-button>
+    
     <el-table
       ref="multipleTable"
       v-loading="listLoading"
@@ -9,7 +12,7 @@
       highlight-current-row
       style="width: 100%;"
       @row-click="seeDetail">
-       
+    
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
@@ -286,6 +289,23 @@
       </span>
     </el-dialog>
 
+    <el-dialog
+      :before-close="handleClose"
+      :visible.sync="BuyRequestVisible"
+      >
+      <el-steps :active="0" finish-status="success" align-center>
+        <el-step title="买入申请" icon="el-icon-edit-outline"></el-step>
+        <el-step title="提交审核" icon="el-icon-upload2"></el-step>
+      </el-steps>
+      <div style="width: 600px; margin: 50px auto">
+        <md-input v-model="ruleForm.DeliveryVarietyCode">品种代号</md-input>
+        <md-input v-model="ruleForm.DeliveryQuantity">仓单数量</md-input>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button :loading="ruleFormLoading" type="primary" @click="submitForm">提交审核</el-button>
+      </span>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -316,6 +336,7 @@ export default {
     return {
       dialogVisible: false,
       UnpledgeRequestVisible: false,
+      BuyRequestVisible: false,
       active: 0,
       ruleForm: {
         MemberId: "",
@@ -439,6 +460,11 @@ export default {
           })
           .catch(_ => {});
     },
+    handleBuyRequest() {
+      this.requestType = "DeliveryRequest";
+      this.ruleForm.DeliveryType = "Buyer";
+      this.BuyRequestVisible = true;
+    },
     handleUnpledgeRequest(row, requestType) {
       this.getLastTransactionHistory(row).then(lastTransactionHistory => {
         Object.assign(this.ruleForm, lastTransactionHistory);
@@ -500,6 +526,8 @@ export default {
           this.ruleFormLoading = false;
           Message.success("提交成功！");
           this.dialogVisible = false;
+          this.UnpledgeRequestVisible = false;
+          this.BuyRequestVisible = false;
           this.getList();
         })
         .catch(error => {
