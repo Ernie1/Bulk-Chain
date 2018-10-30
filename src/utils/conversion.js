@@ -40,6 +40,21 @@ export function frontToBackReceipt(ruleForm) {
 
 
 export function backToFrontReceipt(ruleForm) {
+  var WarehouseReceipt = {};
+  if (ruleForm.GoodsListRequested)
+    WarehouseReceipt = ruleForm.GoodsListRequested[0];
+  else if (ruleForm.RegisteringWarehouseReceipt)
+    WarehouseReceipt =
+      ruleForm.RegisteringWarehouseReceipt;
+  else if (ruleForm.PledgingWarehouseReceipt)
+    WarehouseReceipt =
+      ruleForm.PledgingWarehouseReceipt;
+  else if (ruleForm.UnpledgingWarehouseReceipt)
+    WarehouseReceipt =
+      ruleForm.UnpledgingWarehouseReceipt;
+  else if (ruleForm.UnregisteringWarehouseReceipt)
+    WarehouseReceipt =
+      ruleForm.UnregisteringWarehouseReceipt;
   return Object.assign({
     // TransactionId: ruleForm.TransactionId || null,
     // TxType: null,
@@ -52,15 +67,15 @@ export function backToFrontReceipt(ruleForm) {
     clientCompany: ruleForm.ClientName || null,
     clientName: ruleForm.ClientContact || null,
     clientPhone: ruleForm.ClientContactPhoneNumber || null,
-    goodsVariety: ruleForm.GoodsListRequested[0].VarietyCode || null,
-    goodsQuantity: parseInt(ruleForm.GoodsListRequested[0].Quantity) || null,
-    goodsLevel: ruleForm.GoodsListRequested[0].Quality || null,
-    goodsBand: ruleForm.GoodsListRequested[0].Brand || null,
-    goodsPack: ruleForm.GoodsListRequested[0].GoodsPackage || null,
-    goodsRank: ruleForm.GoodsListRequested[0].GoodsSpecification || null,
-    goodsRegion: ruleForm.GoodsListRequested[0].ProductionPlace || null,
-    goodsProduceDate: ruleForm.GoodsListRequested[0].ProductionDate || null,
-    goodsValidityPeriod: ruleForm.GoodsListRequested[0].ValidDate || null,
+    goodsVariety: WarehouseReceipt.VarietyCode || null,
+    goodsQuantity: WarehouseReceipt.Quantity ? parseInt(WarehouseReceipt.Quantity) : null,
+    goodsLevel: WarehouseReceipt.Quality || null,
+    goodsBand: WarehouseReceipt.Brand || null,
+    goodsPack: WarehouseReceipt.GoodsPackage || null,
+    goodsRank: WarehouseReceipt.GoodsSpecification || null,
+    goodsRegion: WarehouseReceipt.ProductionPlace || null,
+    goodsProduceDate: WarehouseReceipt.ProductionDate || null,
+    goodsValidityPeriod: WarehouseReceipt.ValidDate || null,
     goodsTransport: ruleForm.ModeOfTransport || null,
     warehouseID: ruleForm.TargetWarehouseId || null,
     // TargetWarehouseName: null,
@@ -74,5 +89,6 @@ export function backToFrontReceipt(ruleForm) {
     // DateIndeed: null,
     // WarehouseReceipts: [],
     // DateCreate: null
+    WarehouseReceipt: WarehouseReceipt
   }, ruleForm);
 }

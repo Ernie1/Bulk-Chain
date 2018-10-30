@@ -1,5 +1,8 @@
 <template>
   <div class="app-container">
+    
+    <el-button style="margin-bottom: 30px;" type="primary" icon="el-icon-edit" @click="handleBuyRequest">填写买入申请</el-button>
+    
     <el-table
       ref="multipleTable"
       v-loading="listLoading"
@@ -9,150 +12,205 @@
       highlight-current-row
       style="width: 100%;"
       @row-click="seeDetail">
-       
+    
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-form label-position="left" inline class="table-expand">
             <el-form-item label="填发人">
-              <span>{{ props.row.GoodsQuantity }}</span>
+              <span>{{ props.row.Signer }}</span>
             </el-form-item>
             <el-form-item label="填发地">
-              <span>{{ props.row.Variety }}</span>
-            </el-form-item>
-            <el-form-item label="填发日期">
-              <span>{{ props.row.Variety }}</span>
+              <span>{{ props.row.SignPlace }}</span>
             </el-form-item>
             <el-form-item label="保管人">
-              <span>{{ props.row.Variety }}</span>
+              <span>{{ props.row.GoodsHolder }}</span>
             </el-form-item>
             <el-form-item label="保管人Id">
-              <span>{{ props.row.Variety }}</span>
+              <span>{{ props.row.GoodsHolderId }}</span>
             </el-form-item>
             <el-form-item label="储存期间">
-              <span>{{ props.row.Variety }}</span>
+              <span>{{ props.row.StoragePeriod.StartDate + " 至 " + props.row.StoragePeriod.EndDate }}</span>
             </el-form-item>
-            <el-form-item label="仓储场所">
-              <span>{{ props.row.Variety }}</span>
+            <el-form-item>
             </el-form-item>
-            <el-form-item label="储存期间">
-              <span>{{ props.row.Variety }}</span>
+            <el-form-item label="仓储地址">
+              <span>{{ props.row.StoragePlace.Address }}</span>
+            </el-form-item>
+            <el-form-item label="库位编号">
+              <span>{{ props.row.StoragePlace.Location }}</span>
             </el-form-item>
             <el-form-item label="存货人">
-              <span>{{ props.row.Variety }}</span>
+              <span>{{ props.row.GoodsSaver }}</span>
             </el-form-item>
             <el-form-item label="存货人ID">
-              <span>{{ props.row.Variety }}</span>
+              <span>{{ props.row.GoodsSaverId }}</span>
             </el-form-item>
             <el-form-item label="会员名称">
-              <span>{{ props.row.Variety }}</span>
+              <span>{{ props.row.MemberName }}</span>
             </el-form-item>
             <el-form-item label="会员ID">
-              <span>{{ props.row.Variety }}</span>
+              <span>{{ props.row.MemberId }}</span>
             </el-form-item>
             <el-form-item label="仓单持有人ID">
-              <span>{{ props.row.Variety }}</span>
+              <span>{{ props.row.WarehouseReceiptHolderId }}</span>
+            </el-form-item>
+
+            <el-form-item>
             </el-form-item>
             <el-form-item label="仓单历史">
-              <span>{{ props.row.Variety }}</span>
             </el-form-item>
+            <el-table
+            v-loading="props.row.transHisListLoading"
+            :data="props.row.TransactionHistory"
+            fit
+            border
+            style="width: 100%;">
+            <el-table-column label="交易号" align="center" >
+              <template slot-scope="scope">
+                <span>{{ scope.row.TransactionId }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="申请类型" align="center" >
+              <template slot-scope="scope">
+                <el-tag>{{ scope.row.TxType | reqType2CHFilter }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="申请日期" align="center" >
+              <template slot-scope="scope">
+                <span>{{ scope.row.DateRequest }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="客户Id" align="center" >
+              <template slot-scope="scope">
+                <span>{{ scope.row.ClientId }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="客户名称" align="center" >
+              <template slot-scope="scope">
+                <span>{{ scope.row.ClientName }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="审核日期" align="center" >
+              <template slot-scope="scope">
+                <span>{{ scope.row.DateCheck }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="审核状态" class-name="status-col" >
+              <template slot-scope="scope">
+                <el-tag :type="scope.row.CheckState | appStatus2ColorFilter">{{ scope.row.CheckState | appStatus2CHFilter }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="说明" align="center" >
+              <template slot-scope="scope">
+                <span>{{ scope.row.Description }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+
           </el-form>
         </template>
       </el-table-column>
        
-      <el-table-column :label="$t('myWarehouseReceipt.BatchNumber')" align="center" width="150px" prop="BatchNumber" sortable>
+      <el-table-column :label="$t('myWarehouseReceipt.BatchNumber')" align="center" prop="DeliveryWarehouseReceiptSeriesId" sortable>
         <template slot-scope="scope">
-          <span>{{ scope.row.BatchNumber }}</span>
+          <span>{{ scope.row.DeliveryWarehouseReceiptSeriesId }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('myWarehouseReceipt.DateOfIssue')" width="140px" align="center" prop="DateOfIssue" sortable>
+      <el-table-column :label="$t('myWarehouseReceipt.DateOfIssue')" align="center" prop="SignDate" sortable>
         <template slot-scope="scope">
-          <span>{{ scope.row.DateOfIssue | parseTime('{y}-{m}-{d}') }}</span>
+          <span>{{ scope.row.SignDate }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('myWarehouseReceipt.GoodsQuantity')" align="center" width="150px" prop="GoodsQuantity" sortable>
+      <el-table-column label="仓单数量" align="center" prop="Quantity" sortable>
+        <template slot-scope="scope">
+          <span>{{ scope.row.Quantity }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('myWarehouseReceipt.GoodsQuantity')" align="center" prop="GoodsQuantity" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.GoodsQuantity }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('myWarehouseReceipt.Variety')" align="center" width="80px" prop="Variety" :filters="[{text: 'WH', value: 'WH'}, {text: 'CF', value: 'CF'}, {text: 'SR', value: 'SR'}, {text: 'OI', value: 'OI'}, {text: 'RI', value: 'RI'}, {text: 'PM', value: 'PM'}, {text: 'RS', value: 'RS'}, {text: 'JR', value: 'JR'}]" :filter-method="filterVariety">
+      <el-table-column label="货物质量" align="center" prop="Quality" sortable>
         <template slot-scope="scope">
-          <span>{{ scope.row.Variety }}</span>
+          <span>{{ scope.row.Quality }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('myWarehouseReceipt.Type')" align="center" width="120px" prop="Type" :filters="[{text: $t('myWarehouseReceipt.Standard'), value: true }, {text: $t('myWarehouseReceipt.Nonstandard'), value: false }]" :filter-method="filterType">
+      <el-table-column :label="$t('myWarehouseReceipt.Variety')" align="center" prop="VarietyCode" :filters="[{text: 'WH', value: 'WH'}, {text: 'CF', value: 'CF'}, {text: 'SR', value: 'SR'}, {text: 'OI', value: 'OI'}, {text: 'RI', value: 'RI'}, {text: 'PM', value: 'PM'}, {text: 'RS', value: 'RS'}, {text: 'JR', value: 'JR'}]" :filter-method="filterVariety">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.Type | typeStatusFilter">{{ scope.row.Type?$t('myWarehouseReceipt.Standard'):$t('myWarehouseReceipt.Nonstandard') }}</el-tag>
+          <span>{{ scope.row.VarietyCode }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('myWarehouseReceipt.Holder')" align="center" min-width="200px">
+     
+      <el-table-column :label="$t('myWarehouseReceipt.Holder')" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.Holder }}</span>
+          <span>{{ scope.row.WarehouseReceiptHolder }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('myWarehouseReceipt.Status')" class-name="status-col" width="120px"  prop="Status" :filters="[{ text: $t('myWarehouseReceipt.Inbound'), value: 'Inbound' }, { text: $t('myWarehouseReceipt.Flowable'), value: 'Flowable' }, { text: $t('myWarehouseReceipt.Pledged'), value: 'Pledged' }, { text: $t('myWarehouseReceipt.Outbound'), value: 'Outbound' }, { text: $t('myWarehouseReceipt.Outbounding'), value: 'Outbounding' }, { text: $t('myWarehouseReceipt.Registering'), value: 'Registering' }, { text: $t('myWarehouseReceipt.Pledging'), value: 'Pledging' }, { text: $t('myWarehouseReceipt.Unpledging'), value: 'Unpledging' }, { text: $t('myWarehouseReceipt.Unregistering'), value: 'Unregistering' }, { text: $t('myWarehouseReceipt.Deliverying'), value: 'Deliverying' }]" :filter-method="filterStatus">
+
+      <el-table-column label="匹配状态" class-name="status-col"  prop="MatchState" :filters="[{ text: '未匹配', value: 'Matching' }, { text: '已匹配', value: 'Matched' } ]" :filter-method="filterMatchState">
         <template slot-scope="scope"> 
-          <el-tag>{{ $t('myWarehouseReceipt.' + scope.row.Status) }}</el-tag>
+          <el-tag :type="scope.row.MatchState | MatchState2ColorFilter">{{ scope.row.MatchState | MatchState2CHFilter }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('myWarehouseReceipt.Actions')" align="center" width="240px" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
 
-          <template v-if="scope.row.Status=='Inbound'">
-            <el-button type="success" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Register') }}</el-button>
-            <el-button type="info" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.ApplyforPick') }}</el-button>
-          </template>
-
-          <template v-if="scope.row.Status=='Flowable'">
-            <el-button type="warning" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Pledge') }}</el-button>
-            <el-button type="primary" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Flow') }}</el-button>
-            <el-button type="danger" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Unregister') }}</el-button>
-          </template>
-
-          <template v-if="scope.row.Status.substr(scope.row.Status.length - 3)=='ing'">
-            <el-button type="primary" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.ViewProgress') }}</el-button>
-          </template>
-
-          <template v-if="scope.row.Status=='Pledged'">
-            <el-button type="warning" size="mini" @click.stop="handleUpdate(scope.row)">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
-          </template>
-          
-        </template>
-      </el-table-column>
     </el-table>
 
     <div class="pagination-container">
-      <el-pagination :current-page="listQuery.page" :page-sizes="[10,20,30,50]" :page-size="listQuery.limit" :total="total" background layout="total, sizes, prev, pager, next" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination :current-page="listQuery.page" :page-sizes="[5,10,20,30]" :page-size="listQuery.limit" :total="total" background layout="total, sizes, prev, pager, next" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
 
   </div>
 </template>
 
 <script>
-import {
-  fetchList
-} from "@/api/article";
-import waves from "@/directive/waves"; // 水波纹指令
+import { fetchList } from "@/api/article";
 import { parseTime } from "@/utils";
+import MdInput from "@/components/MDinput";
+import { queryTable } from "@/api/utils";
+import {
+  queryWarehouseReceiptTransactionHistory,
+  memberRequest
+} from "@/api/member";
+import { Message } from "element-ui";
 
 export default {
   name: "ComplexTable",
-  directives: {
-    waves
+  directives: {},
+  components: {
+    MdInput
   },
   filters: {
     typeStatusFilter(type) {
-      return type ? "success" : "danger";
+      return type == "Standard" ? "success" : "danger";
     }
   },
   data() {
     return {
+      ruleForm: {
+        MemberId: "",
+        MemberName: "",
+        MemberContact: "",
+        MemberContactPhoneNumber: "",
+        ClientId: "",
+        ClientName: "",
+        ClientContact: "",
+        ClientContactPhoneNumber: "",
+        RequestSeriesId: "",
+        DateInPlan: "",
+        AmountOfMoneyRequest: "",
+        DateDDL: ""
+      },
       tableKey: 0,
       list: null,
-      total: null,
+      myWarehouseReceipts: null,
+      total: 0,
       listLoading: true,
+      ruleFormLoading: false,
+      requestType: "",
       listQuery: {
         page: 1,
-        limit: 10
+        limit: 5
       }
     };
   },
@@ -160,41 +218,68 @@ export default {
     this.getList();
   },
   methods: {
-    seeDetail(row, event, column){
-      this.$refs.multipleTable.toggleRowExpansion(row);
-    },
     filterVariety(value, row) {
-      return row.Variety == value;
+      return row.VarietyCode == value;
     },
     filterType(value, row) {
       return row.Type == value;
     },
-    filterStatus(value, row) {
-      return row.Status == value;
+    filterMatchState(value, row) {
+      return row.MatchState == value;
     },
     getList() {
       this.listLoading = true;
-      fetchList(this.listQuery).then(response => {
-        this.list = response.data.items;
-        this.total = response.data.total;
-
-        // Just to simulate the time of the request
-        setTimeout(() => {
+      queryTable("Exchange", "DeliveryRequest", "queryMyRequests")
+        .then(response => {
+          var myWarehouseReceipts = JSON.parse(response.data.message);
+          for (var i = 0; i < myWarehouseReceipts.length; ++i)
+            myWarehouseReceipts[i] = JSON.parse(myWarehouseReceipts[i]);
+          console.log(myWarehouseReceipts);
+          this.total = myWarehouseReceipts.length;
+          this.myWarehouseReceipts = myWarehouseReceipts;
+          this.handleCurrentChange(this.listQuery.page);
           this.listLoading = false;
-        }, 1.5 * 1000);
-      });
+        })
+        .catch(error => {
+          console.log(error);
+          this.listLoading = false;
+        });
     },
+    // getList() {
+    //   this.listLoading = true;
+    //   fetchList(this.listQuery).then(response => {
+    //     this.list = response.data.items;
+    //     this.total = response.data.total;
+
+    //     // Just to simulate the time of the request
+    //     setTimeout(() => {
+    //       this.listLoading = false;
+    //     }, 1.5 * 1000);
+    //   });
+    // },
     handleFilter() {
       this.listQuery.page = 1;
       this.getList();
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
-      this.getList();
+      this.handleCurrentChange(1);
     },
     handleCurrentChange(val) {
       this.listQuery.page = val;
-      this.getList();
+      this.list = this.myWarehouseReceipts.slice(
+        this.listQuery.limit * (this.listQuery.page - 1),
+        this.listQuery.limit * (this.listQuery.page - 1) + this.listQuery.limit
+      );
+    },
+    handleClose(done) {
+      if (this.active != 0) done();
+      else
+        this.$confirm("确认关闭？")
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
     }
   }
 };

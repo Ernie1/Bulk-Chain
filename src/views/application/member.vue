@@ -512,6 +512,7 @@ export default {
       else
         this.$confirm("确认关闭？")
           .then(_ => {
+            this.ruleFormLoading = false;
             done();
           })
           .catch(_ => {});

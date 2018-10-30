@@ -200,17 +200,18 @@
       :visible.sync="dialogVisible">
       <!--  -->
       <el-steps :active="active" finish-status="success" align-center>
-        <el-step :title="reqType2CHFilter(requestType)+'申请'" icon="el-icon-edit-outline"></el-step>
+        <el-step v-if="requestType=='DeliveryRequest'" title="买入申请" icon="el-icon-edit-outline"></el-step>
+        <el-step v-else :title="reqType2CHFilter(requestType)+'申请'" icon="el-icon-edit-outline"></el-step>
         <el-step title="提交审核" icon="el-icon-upload2"></el-step>
       </el-steps>
 
       <div style="width: 600px; margin: 50px auto">
         <div v-if="active==0" style="display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
           <el-form>
-            <el-form-item :label="'待'+reqType2CHFilter(requestType)+'仓单批次号'">
+            <el-form-item v-if="requestType!='DeliveryRequest'" :label="'待'+reqType2CHFilter(requestType)+'仓单批次号'">
               <span>{{ ruleForm.RequestSeriesId }}</span>
             </el-form-item>
-            <el-form-item>
+            <el-form-item style="min-width:500px" >
               <md-input v-model="ruleForm.MemberContact">会员联系人</md-input>
               <md-input v-model="ruleForm.MemberContactPhoneNumber">会员联系人电话</md-input>
               <md-input v-model="ruleForm.ClientId">客户ID</md-input>
@@ -220,6 +221,8 @@
               <md-input v-if="requestType=='OutboundRequest'" v-model="ruleForm.DateInPlan">预计提货时间</md-input>
               <md-input v-if="requestType=='PledgeRequest'" v-model="ruleForm.AmountOfMoneyRequest">申请额度</md-input>
               <md-input v-if="requestType=='PledgeRequest'" v-model="ruleForm.DateDDL">质押期限</md-input>
+              <md-input v-if="requestType=='DeliveryRequest'" v-model="ruleForm.DeliveryVarietyCode">品种代号</md-input>
+              <md-input v-if="requestType=='DeliveryRequest'" v-model="ruleForm.DeliveryQuantity">仓单数量</md-input>
             </el-form-item>
           </el-form>
         </div>
@@ -289,23 +292,6 @@
       </span>
     </el-dialog>
 
-    <el-dialog
-      :before-close="handleClose"
-      :visible.sync="BuyRequestVisible"
-      >
-      <el-steps :active="0" finish-status="success" align-center>
-        <el-step title="买入申请" icon="el-icon-edit-outline"></el-step>
-        <el-step title="提交审核" icon="el-icon-upload2"></el-step>
-      </el-steps>
-      <div style="width: 600px; margin: 50px auto">
-        <md-input v-model="ruleForm.DeliveryVarietyCode">品种代号</md-input>
-        <md-input v-model="ruleForm.DeliveryQuantity">仓单数量</md-input>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button :loading="ruleFormLoading" type="primary" @click="submitForm">提交审核</el-button>
-      </span>
-    </el-dialog>
-
   </div>
 </template>
 
@@ -336,7 +322,6 @@ export default {
     return {
       dialogVisible: false,
       UnpledgeRequestVisible: false,
-      BuyRequestVisible: false,
       active: 0,
       ruleForm: {
         MemberId: "",
@@ -456,14 +441,19 @@ export default {
       else
         this.$confirm("确认关闭？")
           .then(_ => {
+            this.ruleFormLoading = false;
             done();
           })
           .catch(_ => {});
     },
     handleBuyRequest() {
+      for (var k in this.ruleForm) {
+        this.ruleForm[k] = "";
+      }
+      this.active = 0;
       this.requestType = "DeliveryRequest";
       this.ruleForm.DeliveryType = "Buyer";
-      this.BuyRequestVisible = true;
+      this.dialogVisible = true;
     },
     handleUnpledgeRequest(row, requestType) {
       this.getLastTransactionHistory(row).then(lastTransactionHistory => {
@@ -514,11 +504,13 @@ export default {
         this.ruleForm.AmountOfMoneyRequest = parseInt(
           this.ruleForm.AmountOfMoneyRequest
         );
-      if (
+      else if (
         this.requestType == "ConfirmRejected" ||
         this.requestType == "ConfirmResolved"
       ) {
         fcn = "confirmPledgeRequest";
+      } else if (this.requestType == "DeliveryRequest"){
+        this.ruleForm.DeliveryQuantity = parseInt(this.ruleForm.DeliveryQuantity);
       }
       memberRequest(fcn, this.ruleForm)
         .then(response => {
@@ -527,7 +519,6 @@ export default {
           Message.success("提交成功！");
           this.dialogVisible = false;
           this.UnpledgeRequestVisible = false;
-          this.BuyRequestVisible = false;
           this.getList();
         })
         .catch(error => {

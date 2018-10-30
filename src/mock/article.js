@@ -9,7 +9,7 @@ const image_uri = 'https://wpimg.wallstcn.com/e4558086-631c-425c-9430-56ffb46e70
 
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
-    BatchNumber: 'WR_@string(\'1234567890\',7)',
+    BatchNumber: '@string(\'1234567890\',7)',
     DateOfIssue: +Mock.Random.date('T'),
     GoodsQuantity: '@integer(1,100)',
     'Variety|1': ['WH', 'CF', 'SR', 'OI', 'RI', 'PM', 'RS', 'JR'],

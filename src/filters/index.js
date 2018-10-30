@@ -51,12 +51,30 @@ export function appStatus2ColorFilter(status) {
   return statusMap[status] || "success";
 }
 
+export function MatchState2ColorFilter(status) {
+  const statusMap = {
+    Matching: "primary",
+    Matched: "success",
+    Unmatched: "info"
+  };
+  return statusMap[status] || "danger";
+}
+
 export function appStatus2CHFilter(status) {
   const statusMap = {
     Checking: "审核中",
     Resolved: "审核通过",
     Rejected: "审核失败",
     Finished: "生成仓单"
+  };
+  return statusMap[status] || status;
+}
+
+export function MatchState2CHFilter(status) {
+  const statusMap = {
+    Matching: "未匹配",
+    Matched: "已匹配",
+    Unmatched: "匹配失败"
   };
   return statusMap[status] || status;
 }

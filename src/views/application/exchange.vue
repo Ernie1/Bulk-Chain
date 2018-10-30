@@ -5,6 +5,7 @@
     <el-select v-model="requestsType" class="filter-item" @change="handleFilter">
       <el-option v-for="item in requestsTypeOptions" :key="item.key" :label="item.label" :value="item.key"/>
     </el-select>
+    <el-button v-if="requestsType=='DeliveryRequest'" style="margin-bottom: 30px;" type="primary" icon="el-icon-refresh" @click="handleMatchRequest">仓单匹配</el-button>
     
     <!-- 申请列表 -->
     <el-table
@@ -15,25 +16,29 @@
       highlight-current-row
       style="width: 100%;"
       @row-click="handleRowClick">
-      <el-table-column label="申请编号" align="center" width="300px">
+      <el-table-column label="申请编号" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.TransactionId }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="申请日期" width="300px" align="center">
+      <el-table-column label="申请日期" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.DateRequest }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态 / 操作" class-name="status-col" width="300px">
+      <el-table-column label="状态 / 操作" class-name="status-col">
         <template slot-scope="scope">
           <template v-if="scope.row.CheckState=='Checking'">
             <el-button type="danger" size="mini" @click.stop="checkOrRegister(scope.row, 'check'+scope.row.TxType, 'Rejected')">拒绝{{ scope.row.DeliveryType | DeliveryType2CHFilter }}{{ scope.row.TxType | TxType2CHFilter }}</el-button>
             <el-button type="success" size="mini" @click.stop="checkOrRegister(scope.row, 'check'+scope.row.TxType, 'Resolved')">批准{{ scope.row.DeliveryType | DeliveryType2CHFilter }}{{ scope.row.TxType | TxType2CHFilter }}</el-button>
           </template>
-          <el-tag v-else :type="scope.row.CheckState | appStatus2ColorFilter">{{ scope.row.DeliveryType | DeliveryType2CHFilter }}{{ scope.row.TxType | TxType2CHFilter }}{{ scope.row.CheckState | CheckState2CHFilter }}</el-tag>
+          <template v-else>
+            <el-tag :type="scope.row.CheckState | appStatus2ColorFilter">{{ scope.row.DeliveryType | DeliveryType2CHFilter }}{{ scope.row.TxType | TxType2CHFilter }}{{ scope.row.CheckState | CheckState2CHFilter }}</el-tag>
+            <el-tag v-if="scope.row.MatchState" :type="scope.row.MatchState | MatchState2ColorFilter">{{ scope.row.MatchState | MatchState2CHFilter }}</el-tag>
+          </template>
         </template>
       </el-table-column>
+      
     </el-table>
 
     <div class="pagination-container">
@@ -59,7 +64,7 @@
               <h2>&nbsp;&nbsp;{{ ruleForm.Description }}</h2>
             </div>
             <div v-if="ruleForm.CheckState == 'Resolved'">
-              <h1><i class="el-icon-circle-check-outline"></i> 已批准{{ ruleForm.DeliveryType | DeliveryType2CHFilter }}{{ ruleForm.TxType | TxType2CHFilter }}申请</h1>
+              <h1><i class="el-icon-circle-check-outline"></i> 已批准{{ ruleForm.DeliveryType | DeliveryType2CHFilter }}{{ ruleForm.TxType | TxType2CHFilter }}申请<span v-if="ruleForm.MatchState" >，{{ ruleForm.MatchState | MatchState2CHFilter }}</span></h1>
             </div>
           </div>
           <!--  -->
@@ -266,6 +271,21 @@
       </span>
 
     </el-dialog>
+
+    <!--  -->
+    <el-dialog
+      title="提示"
+      :visible.sync="MatchRequestVisible"
+      width="30%"
+      >
+      <span>确认匹配？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="MatchRequestVisible = false">取 消</el-button>
+        <el-button :loading="ruleFormLoading" type="primary" @click="submitForm">确 定</el-button>
+      </span>
+    </el-dialog>
+
+
   </div>
 </template>
 
@@ -298,6 +318,7 @@ export default {
       },
       dialogVisible: false,
       checkOrRegisterVisible: false,
+      MatchRequestVisible: false,
       requestsTypeOptions: [
         { label: "全部", key: "*" },
         { label: "注册审核", key: "RegisterRequest" },
@@ -341,7 +362,7 @@ export default {
             }
           }
           this.myRequests = myRequests;
-          console.log(myRequests);
+          // console.log(myRequests);
           this.handleCurrentChange(this.listQuery.page);
           this.total = total;
           this.listLoading = false;
@@ -354,7 +375,7 @@ export default {
     handleRowClick(a, b, c) {
       this.dialogVisible = true;
       this.ruleForm = Object.assign({}, a);
-      console.log(this.ruleForm);
+      // console.log(this.ruleForm);
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
@@ -376,17 +397,24 @@ export default {
       this.fcn = fcn;
       this.checkOrRegisterVisible = true;
     },
+    handleMatchRequest() {
+      for (var k in this.ruleForm) {
+        this.ruleForm[k] = "";
+      }
+      this.fcn = "matchDeliveryRequest";
+      this.MatchRequestVisible = true;
+    },
     submitForm() {
       this.ruleForm.DateCheck = parseTime(new Date(), "{y}-{m}-{d}");
-
       this.ruleFormLoading = true;
-      console.log(this.ruleForm);
+      // console.log(this.ruleForm);
       storageRequest(this.fcn, this.ruleForm)
         .then(response => {
           if (!response.data.success) throw new Error(response.data.message);
           this.ruleFormLoading = false;
           Message.success("提交成功！");
           this.checkOrRegisterVisible = false;
+          this.MatchRequestVisible = false;
           this.getList();
         })
         .catch(error => {
@@ -397,6 +425,7 @@ export default {
     handleClose(done) {
       this.$confirm("确认关闭？")
         .then(_ => {
+          this.ruleFormLoading = false;
           done();
         })
         .catch(_ => {});
