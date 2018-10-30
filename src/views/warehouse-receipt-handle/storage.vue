@@ -76,11 +76,18 @@
                 <span>{{ ruleForm.TransactionId }} </span>
               </el-form-item>
             <!-- </el-col> -->
-            <!-- <el-col :span="12"> -->
-              <el-form-item label="申请日期">
-                <span>{{ ruleForm.DateRequest }}</span>
-              </el-form-item>
-            <!-- </el-col> -->
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="申请日期">
+                  <span>{{ ruleForm.DateRequest }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item v-if="ruleForm.CheckState != 'Checking' && ruleForm.CheckState != 'Resolved'" label="审核日期">
+                  <span>{{ ruleForm.DateCheck }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
           <!-- </el-row> -->
         </el-form>
 
@@ -89,6 +96,16 @@
           <div style="height: 50px"></div>
           <el-form-item label="申请人信息">
             <el-row>
+              <el-col :span="12">
+                <el-form-item label="会员名称">
+                  <span>{{ ruleForm.MemberName }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="会员ID">
+                  <span>{{ ruleForm.MemberId }}</span>
+                </el-form-item>
+              </el-col>
               <el-col :span="12">
                 <el-form-item label="联系人">
                   <span>{{ ruleForm.name }}</span>
@@ -141,7 +158,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="品级">
-                  <span>{{ ruleForm.clientName }}</span>
+                  <span>{{ ruleForm.goodsLevel }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="12">

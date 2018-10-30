@@ -28,10 +28,10 @@
       <el-table-column label="状态 / 操作" class-name="status-col" width="300px">
         <template slot-scope="scope">
           <template v-if="scope.row.CheckState=='Checking'">
-            <el-button type="danger" size="mini" @click.stop="checkOrRegister(scope.row, 'check'+scope.row.TxType, 'Rejected')">拒绝{{ scope.row.TxType | TxType2CHFilter }}</el-button>
-            <el-button type="success" size="mini" @click.stop="checkOrRegister(scope.row, 'check'+scope.row.TxType, 'Resolved')">批准{{ scope.row.TxType | TxType2CHFilter }}</el-button>
+            <el-button type="danger" size="mini" @click.stop="checkOrRegister(scope.row, 'check'+scope.row.TxType, 'Rejected')">拒绝{{ scope.row.DeliveryType | DeliveryType2CHFilter }}{{ scope.row.TxType | TxType2CHFilter }}</el-button>
+            <el-button type="success" size="mini" @click.stop="checkOrRegister(scope.row, 'check'+scope.row.TxType, 'Resolved')">批准{{ scope.row.DeliveryType | DeliveryType2CHFilter }}{{ scope.row.TxType | TxType2CHFilter }}</el-button>
           </template>
-          <el-tag v-else :type="scope.row.CheckState | appStatus2ColorFilter">{{ scope.row.TxType | TxType2CHFilter }}{{ scope.row.CheckState | CheckState2CHFilter }}</el-tag>
+          <el-tag v-else :type="scope.row.CheckState | appStatus2ColorFilter">{{ scope.row.DeliveryType | DeliveryType2CHFilter }}{{ scope.row.TxType | TxType2CHFilter }}{{ scope.row.CheckState | CheckState2CHFilter }}</el-tag>
         </template>
       </el-table-column>
     </el-table>
@@ -51,15 +51,15 @@
           <div style="display: flex; justify-content: center;">
             <!--  -->
             <div v-if="ruleForm.CheckState == 'Checking'">
-              <h1><i class="el-icon-time"></i> {{ ruleForm.TxType | TxType2CHFilter }}申请待审核</h1>
+              <h1><i class="el-icon-time"></i> {{ ruleForm.DeliveryType | DeliveryType2CHFilter }}{{ ruleForm.TxType | TxType2CHFilter }}申请待审核</h1>
             </div>
             <!--  -->
             <div v-if="ruleForm.CheckState == 'Rejected'" style="display: flex; align-items: center;">
-              <h1><i class="el-icon-circle-close-outline"></i> 已拒绝{{ ruleForm.TxType | TxType2CHFilter }}申请</h1>
+              <h1><i class="el-icon-circle-close-outline"></i> 已拒绝{{ ruleForm.DeliveryType | DeliveryType2CHFilter }}{{ ruleForm.TxType | TxType2CHFilter }}申请</h1>
               <h2>&nbsp;&nbsp;{{ ruleForm.Description }}</h2>
             </div>
             <div v-if="ruleForm.CheckState == 'Resolved'">
-              <h1><i class="el-icon-circle-check-outline"></i> 已批准{{ ruleForm.TxType | TxType2CHFilter }}申请</h1>
+              <h1><i class="el-icon-circle-check-outline"></i> 已批准{{ ruleForm.DeliveryType | DeliveryType2CHFilter }}{{ ruleForm.TxType | TxType2CHFilter }}申请</h1>
             </div>
           </div>
           <!--  -->
@@ -69,11 +69,18 @@
                 <span>{{ ruleForm.TransactionId }} </span>
               </el-form-item>
             <!-- </el-col> -->
-            <!-- <el-col :span="12"> -->
-              <el-form-item label="申请日期">
-                <span>{{ ruleForm.DateRequest }}</span>
-              </el-form-item>
-            <!-- </el-col> -->
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="申请日期">
+                  <span>{{ ruleForm.DateRequest }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item v-if="ruleForm.CheckState != 'Checking'" label="审核日期">
+                  <span>{{ ruleForm.DateCheck }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
           <!-- </el-row> -->
         </el-form>
 
@@ -83,13 +90,23 @@
           <el-form-item label="申请人信息">
             <el-row>
               <el-col :span="12">
+                <el-form-item label="会员名称">
+                  <span>{{ ruleForm.MemberName }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="会员ID">
+                  <span>{{ ruleForm.MemberId }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
                 <el-form-item label="联系人">
-                  <span>{{ ruleForm.name }}</span>
+                  <span>{{ ruleForm.MemberContact }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="电话">
-                  <span>{{ ruleForm.phone }}</span>
+                  <span>{{ ruleForm.MemberContactPhoneNumber }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -99,151 +116,130 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="客户ID">
-                  <span>{{ ruleForm.clientID }}</span>
+                  <span>{{ ruleForm.ClientId }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="名称">
-                  <span>{{ ruleForm.clientCompany }}</span>
+                  <span>{{ ruleForm.ClientName }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="客户联系人">
-                  <span>{{ ruleForm.clientName }}</span>
+                  <span>{{ ruleForm.ClientContact }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="客户电话">
-                  <span>{{ ruleForm.clientPhone }}</span>
+                  <span>{{ ruleForm.ClientContactPhoneNumber }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
           </el-form-item>
           <!--  -->
-          <el-form-item label="货物信息">
+          <el-form-item v-if="ruleForm.TxType=='DeliveryRequest'" label="货物信息">
             <el-row>
               <el-col :span="12">
                 <el-form-item label="品种代号">
-                  <span>{{ ruleForm.goodsVariety }}</span>
+                  <span>{{ ruleForm.DeliveryVarietyCode }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="数量">
-                  <span>{{ ruleForm.goodsQuantity }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="品级">
-                  <span>{{ ruleForm.clientName }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="产地">
-                  <span>{{ ruleForm.goodsRegion }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="24">
-                <el-form-item label="运输方式">
-                  <span>{{ ruleForm.goodsTransport }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="生产日期">
-                  <span>{{ ruleForm.goodsProduceDate }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="有效期至">
-                  <span>{{ ruleForm.goodsValidityPeriod }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="24">
-                <el-form-item label="品牌">
-                  <span>{{ ruleForm.goodsBand }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="货物包装">
-                  <span>{{ ruleForm.goodsPack }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="货物规格">
-                  <span>{{ ruleForm.goodsRank }}</span>
+                  <span>{{ ruleForm.DeliveryQuantity }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
           </el-form-item>
-          <!--  -->
-          <el-form-item label="仓库信息">
-            <el-row>
-              <el-col :span="24">
-                <el-form-item label="仓库ID">
-                  <span>{{ ruleForm.warehouseID }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="24">
-                <el-form-item label="拟入库时间">
-                  <span>{{ ruleForm.inboundPlanTime }}</span>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form-item>
-          <!--  -->
-          <el-form-item v-if="ruleForm.CheckState=='Finished'" label="登记信息">
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="登记人">
-                  <span>{{ ruleForm.WarehouseReceipts[0].Signer }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="登记地">
-                  <span>{{ ruleForm.WarehouseReceipts[0].SignPlace }}</span>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="登记日期">
-                  <span>{{ ruleForm.WarehouseReceipts[0].SignDate }}</span>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="仓储开始日期">
-                  <span>{{ ruleForm.WarehouseReceipts[0].StoragePeriod.StartDate }}</span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="仓储结束日期">
-                  <span>{{ ruleForm.WarehouseReceipts[0].StoragePeriod.EndDate }}</span>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="24">
-                <el-form-item label="仓储地址">
-                  <span>{{ ruleForm.WarehouseReceipts[0].StoragePlace.Address }}</span>
-                </el-form-item>
-              </el-col>
+          <div v-else-if="!!ruleForm.WarehouseReceipt">
+            <el-form-item label="货物信息">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="品种代号">
+                    <span>{{ ruleForm.WarehouseReceipt.VarietyCode }}</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="数量">
+                    <span>{{ ruleForm.WarehouseReceipt.Quantity }}</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="品级">
+                    <span>{{ ruleForm.WarehouseReceipt.Quality }}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form-item>
+            <!--  -->
+            <el-form-item label="登记信息">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="登记人">
+                    <span>{{ ruleForm.WarehouseReceipt.Signer }}</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="登记地">
+                    <span>{{ ruleForm.WarehouseReceipt.SignPlace }}</span>
+                  </el-form-item>
+                </el-col>
               </el-row>
               <el-row>
-              <el-col :span="24">
-                <el-form-item label="库位编号">
-                  <span>{{ ruleForm.WarehouseReceipts[0].StoragePlace.Location }}</span>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="入库日期">
-                  <span>{{ ruleForm.DateIndeed }}</span>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form-item>
+                <el-col :span="12">
+                  <el-form-item label="登记日期">
+                    <span>{{ ruleForm.WarehouseReceipt.SignDate }}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form-item>
+            <el-form-item label="仓库信息">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="仓库名">
+                    <span>{{ ruleForm.WarehouseReceipt.GoodsHolder }}</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="仓库ID">
+                    <span>{{ ruleForm.WarehouseReceipt.GoodsHolderId }}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="24">
+                  <el-form-item label="仓储地址">
+                    <span>{{ ruleForm.WarehouseReceipt.StoragePlace.Address }}</span>
+                  </el-form-item>
+                </el-col>
+                </el-row>
+                <el-row>
+                <el-col :span="24">
+                  <el-form-item label="库位编号">
+                    <span>{{ ruleForm.WarehouseReceipt.StoragePlace.Location }}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="仓储开始日期">
+                    <span>{{ ruleForm.WarehouseReceipt.StoragePeriod.StartDate }}</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="仓储结束日期">
+                    <span>{{ ruleForm.WarehouseReceipt.StoragePeriod.EndDate }}</span>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form-item>
+            <el-form-item v-if="ruleForm.TxType!='DeliveryRequest'" label="仓单批次号">
+              <span>{{ ruleForm.WarehouseReceipt.WarehouseReceiptSeriesId }}</span>
+            </el-form-item>
+          </div>
+          <!--  -->
+          <!--  -->
+          
         </el-form>
       </div>
 
@@ -256,114 +252,18 @@
 
       <div style="width: 600px; margin: 20px auto">
         <!-- 第1步骤 -->
-        <el-form :model="ruleForm" label-width="100px" label-position="left">
-          <el-card>
-            <el-form-item label="货物信息">
-              <el-row>
-                <el-col :span="6">
-                  <el-form-item prop="goodsVariety">
-                    <md-input v-model="ruleForm.goodsVariety">品种代号</md-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="3">&nbsp;</el-col>
-                <el-col :span="6">
-                  <el-form-item prop="goodsQuantity">
-                    <md-input v-model="ruleForm.goodsQuantity">数量</md-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="3">&nbsp;</el-col>
-                <el-col :span="6">
-                  <el-form-item prop="goodsLevel">
-                    <md-input v-model="ruleForm.goodsLevel">品级</md-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <!--  -->
-              <el-row>
-                <el-col :span="11">
-                  <el-form-item prop="goodsRegion">
-                    <md-input v-model="ruleForm.goodsRegion">产地</md-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="3">&nbsp;</el-col>
-                <el-col :span="10">
-                  <el-form-item prop="goodsTransport">
-                    <md-input v-model="ruleForm.goodsTransport">运输方式</md-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <!--  -->
-              <el-form-item prop="goodsProduceDate">
-                <md-input v-model="ruleForm.goodsProduceDate">生产日期</md-input>
-              </el-form-item>
-              <!--  -->
-              <el-form-item prop="goodsValidityPeriod">
-                <md-input v-model="ruleForm.goodsValidityPeriod">有效期至</md-input>
-              </el-form-item>
-              <!--  -->
-              <el-form-item prop="goodsBand">
-                <md-input v-model="ruleForm.goodsBand">品牌</md-input>
-              </el-form-item>
-              <!--  -->
-              <el-form-item prop="goodsPack">
-                <md-input v-model="ruleForm.goodsPack">货物包装</md-input>
-              </el-form-item>
-              <!--  -->
-              <el-form-item prop="goodsRank">
-                <md-input v-model="ruleForm.goodsRank">货物规格</md-input>
-              </el-form-item>
-            </el-form-item>
-          </el-card>
-          <!-- checkInboundRequest || checkOutboundRequest -->
-          <div v-if="fcn=='checkInboundRequest'||fcn=='checkOutboundRequest'">
-            <el-form-item prop="DatePermitted">
-              <md-input v-model="ruleForm.DatePermitted">{{ ruleForm.TxType | TxType2CHFilter  }}期限</md-input>
-            </el-form-item>
+        <el-form :model="ruleForm">
             <el-form-item prop="Description">
               <md-input v-model="ruleForm.Description">说明</md-input>
             </el-form-item>
-          </div>
-          <!-- registerInbound -->
-          <div v-if="fcn=='registerInbound'">
-            <el-form-item prop="Signer">
-              <md-input v-model="ruleForm.Signer">登记人</md-input>
-            </el-form-item>
-             <el-form-item prop="SignPlace">
-              <md-input v-model="ruleForm.SignPlace">登记地</md-input>
-            </el-form-item>
-            <el-form-item prop="SignDate">
-              <md-input v-model="ruleForm.SignDate">登记日期</md-input>
-            </el-form-item>
-            <el-form-item prop="StartDate">
-              <md-input v-model="ruleForm.StartDate">仓储开始日期</md-input>
-            </el-form-item>
-             <el-form-item prop="EndDate">
-              <md-input v-model="ruleForm.EndDate">仓储结束日期</md-input>
-            </el-form-item>
-            <el-form-item prop="Address">
-              <md-input v-model="ruleForm.Address">仓储地址</md-input>
-            </el-form-item>
-            <el-form-item prop="Location">
-              <md-input v-model="ruleForm.Location">库位编号</md-input>
-            </el-form-item>
-          </div>
-          <!-- registerInbound || registerOutbound -->
-          <el-form-item v-if="fcn=='registerInbound'||fcn=='registerOutbound'" prop="DateIndeed">
-            <md-input v-model="ruleForm.DateIndeed">{{ ruleForm.TxType | TxType2CHFilter }}日期</md-input>
-          </el-form-item>
         </el-form>
 
       </div>
         
-        <span slot="footer">
-          <!-- checkInboundRequest || checkOutboundRequest -->
-          <div v-if="fcn=='checkInboundRequest'||fcn=='checkOutboundRequest'">
-            <el-button v-if="ruleForm.CheckState=='Resolved'" type="success" :loading="ruleFormLoading" @click="submitForm">批准{{ ruleForm.TxType | TxType2CHFilter }}</el-button>
-            <el-button v-if="ruleForm.CheckState=='Rejected'" type="danger" :loading="ruleFormLoading" @click="submitForm">拒绝{{ ruleForm.TxType | TxType2CHFilter }}</el-button>
-          </div>
-          <!-- registerInbound || registerOutbound -->
-          <el-button v-if="fcn=='registerInbound'||fcn=='registerOutbound'" type="success" :loading="ruleFormLoading" @click="submitForm">登记{{ ruleForm.TxType | TxType2CHFilter }}</el-button>
-        </span>
+      <span slot="footer">
+        <el-button v-if="ruleForm.CheckState=='Resolved'" type="success" :loading="ruleFormLoading" @click="submitForm">批准{{ ruleForm.DeliveryType | DeliveryType2CHFilter }}{{ ruleForm.TxType | TxType2CHFilter }}</el-button>
+        <el-button v-if="ruleForm.CheckState=='Rejected'" type="danger" :loading="ruleFormLoading" @click="submitForm">拒绝{{ ruleForm.DeliveryType | DeliveryType2CHFilter }}{{ ruleForm.TxType | TxType2CHFilter }}</el-button>
+      </span>
 
     </el-dialog>
   </div>
@@ -400,79 +300,24 @@ export default {
       checkOrRegisterVisible: false,
       requestsTypeOptions: [
         { label: "全部", key: "*" },
-        { label: "入库审核", key: "InboundRequest" },
-        { label: "出库审核", key: "OutboundRequest" }
+        { label: "注册审核", key: "RegisterRequest" },
+        { label: "交割审核", key: "DeliveryRequest" },
+        { label: "质押审核", key: "PledgeRequest" },
+        { label: "解押审核", key: "UnpledgeRequest" },
+        { label: "注销审核", key: "UnregisterRequest" }
       ],
       requestsType: "*",
       fcn: null,
-      // ruleForm: {
-      //   name: "张三",
-      //   phone: "19900289212",
-      //   clientID: "client_000001",
-      //   clientCompany: "A农产品加工有限公司",
-      //   clientName: "莉莉丝",
-      //   clientPhone: "19900289212",
-      //   goodsVariety: "WH",
-      //   goodsQuantity: "200",
-      //   goodsLevel: "A",
-      //   goodsRegion: "河南",
-      //   goodsTransport: "货车",
-      //   goodsProduceDate: "2018-10-01",
-      //   goodsValidityPeriod: "2019-10-01",
-      //   goodsBand: "",
-      //   goodsPack: "",
-      //   goodsRank: "",
-      //   warehouseID: "CCMID",
-      //   inboundPlanTime: "2018-10-10"
-      // },
-      ruleForm: {
-        name: "",
-        phone: "",
-        clientID: "",
-        clientCompany: "",
-        clientName: "",
-        clientPhone: "",
-        goodsVariety: "",
-        goodsQuantity: "",
-        goodsLevel: "",
-        goodsRegion: "",
-        goodsTransport: "",
-        goodsProduceDate: "",
-        goodsValidityPeriod: "",
-        goodsBand: "",
-        goodsPack: "",
-        goodsRank: "",
-        warehouseID: "",
-        inboundPlanTime: ""
-      }
+      ruleForm: {}
     };
   },
   created() {
     this.getList();
   },
   methods: {
-    // getList() {
-    //   this.listLoading = true;
-    //   queryTable("Exchange", "*", "queryMyRequests")
-    //     .then(response => {
-    //       const myWarehouseReceipts = JSON.parse(response.data.message);
-    //       for (let i = 0; i < myWarehouseReceipts.length; ++i) {
-    //         myWarehouseReceipts[i] = JSON.parse(myWarehouseReceipts[i]);
-    //       }
-    //       console.log(myWarehouseReceipts);
-    //       this.total = myWarehouseReceipts.length;
-    //       this.myWarehouseReceipts = myWarehouseReceipts;
-    //       this.handleCurrentChange(this.listQuery.page);
-    //       this.listLoading = false;
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //       this.listLoading = false;
-    //     });
-    // },
     getList() {
       this.listLoading = true;
-      queryTable("Exchange", "*", "queryMyRequests")
+      queryTable("Exchange", this.requestsType, "queryMyRequests")
         .then(response => {
           var myRequests = [];
           if (response.data.message != "null") {
@@ -480,9 +325,23 @@ export default {
             var total = temp.length;
             for (var i = 0; i < total; i++) {
               myRequests[i] = JSON.parse(temp[i]);
+              // unify field name
+              if (myRequests[i].RegisteringWarehouseReceipt)
+                myRequests[i].WarehouseReceipt =
+                  myRequests[i].RegisteringWarehouseReceipt;
+              else if (myRequests[i].PledgingWarehouseReceipt)
+                myRequests[i].WarehouseReceipt =
+                  myRequests[i].PledgingWarehouseReceipt;
+              else if (myRequests[i].UnpledgingWarehouseReceipt)
+                myRequests[i].WarehouseReceipt =
+                  myRequests[i].UnpledgingWarehouseReceipt;
+              else if (myRequests[i].UnregisteringWarehouseReceipt)
+                myRequests[i].WarehouseReceipt =
+                  myRequests[i].UnregisteringWarehouseReceipt;
             }
           }
           this.myRequests = myRequests;
+          console.log(myRequests);
           this.handleCurrentChange(this.listQuery.page);
           this.total = total;
           this.listLoading = false;
@@ -513,41 +372,17 @@ export default {
         this.ruleForm[k] = "";
       }
       this.ruleForm = Object.assign(this.ruleForm, row);
-      if (
-        this.fcn == "checkInboundRequest" ||
-        this.fcn == "checkOutboundRequest"
-      ) {
-        this.ruleForm.DatePermitted = this.ruleForm.inboundPlanTime;
-        this.ruleForm.CheckState = CheckState;
-      } else if (
-        this.fcn == "registerInbound" ||
-        this.fcn == "registerOutbound"
-      ) {
-        this.ruleForm.DateIndeed = this.ruleForm.DateInPlan;
-      }
+      this.ruleForm.CheckState = CheckState;
       this.fcn = fcn;
       this.checkOrRegisterVisible = true;
     },
     submitForm() {
-      var GoodsListRequested = frontToBackReceipt(this.ruleForm)
-        .GoodsListRequested;
-      if (
-        this.fcn == "checkInboundRequest" ||
-        this.fcn == "checkOutboundRequest"
-      ) {
-        this.ruleForm.GoodsListPermitted = GoodsListRequested;
-        this.ruleForm.DateCheck = parseTime(new Date(), "{y}-{m}-{d}");
-      } else if (this.fcn == "registerInbound") {
-        this.ruleForm.GoodsListIndeed = GoodsListRequested;
-        this.ruleForm.DateCreate = parseTime(new Date(), "{y}-{m}-{d}");
-      } else if (this.fcn == "registerOutbound") {
-        this.ruleForm.GoodsIndeed = GoodsListRequested[0];
-      }
+      this.ruleForm.DateCheck = parseTime(new Date(), "{y}-{m}-{d}");
+
       this.ruleFormLoading = true;
       console.log(this.ruleForm);
       storageRequest(this.fcn, this.ruleForm)
         .then(response => {
-          console.log(response);
           if (!response.data.success) throw new Error(response.data.message);
           this.ruleFormLoading = false;
           Message.success("提交成功！");

@@ -83,7 +83,13 @@ export function TxType2CHFilter(status) {
   return statusMap[status] || status;
 }
 
-  
+export function DeliveryType2CHFilter(status) {
+  const statusMap = {
+    Buyer: '买入',
+    Seller: '卖出'
+  };
+  return statusMap[status] || status;
+}
 
 export function rcptStatus2CHFilter(status) {
   const statusMap = {

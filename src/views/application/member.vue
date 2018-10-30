@@ -159,11 +159,18 @@
                 <span>{{ ruleForm.TransactionId }} </span>
               </el-form-item>
             <!-- </el-col> -->
-            <!-- <el-col :span="12"> -->
-              <el-form-item label="申请日期">
-                <span>{{ ruleForm.DateRequest }}</span>
-              </el-form-item>
-            <!-- </el-col> -->
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="申请日期">
+                  <span>{{ ruleForm.DateRequest }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item v-if="ruleForm.CheckState != 'Checking'" label="审核日期">
+                  <span>{{ ruleForm.DateCheck }}</span>
+                </el-form-item>
+              </el-col>
+            </el-row>
           <!-- </el-row> -->
         </el-form>
 
@@ -244,7 +251,7 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="品级">
-                  <span>{{ ruleForm.clientName }}</span>
+                  <span>{{ ruleForm.goodsLevel }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
