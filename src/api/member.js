@@ -43,7 +43,8 @@ export function memberRequest(fcn, form) {
   req.peers = ["peer1"]
   form.MemberId = store.getters.id
   form.MemberName = store.getters.name
-  form.DateRequest = parseTime(new Date(), '{y}-{m}-{d}')
+  if (fcn != "sendUnpledgeRequest")
+    form.DateRequest = parseTime(new Date(), '{y}-{m}-{d}')
   req.args = [JSON.stringify(form)]
   return request({
     url: '/channels/mychannel/chaincodes/mycc/invoke',

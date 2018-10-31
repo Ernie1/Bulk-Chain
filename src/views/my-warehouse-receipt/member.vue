@@ -178,12 +178,12 @@
           </template>
 
           <template v-if="scope.row.State=='Pledged'">
-            <el-button type="danger" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'UnpledgeRequest')">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
+            <el-button type="danger" size="mini" @click.stop="handleUnpledgeRequest(scope.row)">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
           </template>
 
           <template v-if="scope.row.LastTransactionHistory">
-            <el-button type="danger" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'ConfirmRejected')">取消</el-button>
-            <el-button type="success" size="mini" @click.stop="handleUnpledgeRequest(scope.row, 'ConfirmResolved')">确认</el-button>
+            <el-button type="danger" size="mini" @click.stop="handleConfirmRequest(scope.row, 'ConfirmRejected')">取消</el-button>
+            <el-button type="success" size="mini" @click.stop="handleConfirmRequest(scope.row, 'ConfirmResolved')">确认</el-button>
           </template>
            
         </template>
@@ -359,7 +359,7 @@
       <span>{{ requestType=='UnpledgeRequest'?'确认解押？':requestType=='ConfirmRejected'?'取消质押？':'确认质押？' }}</span>
       <span slot="footer" class="dialog-footer">
         <el-button @click="UnpledgeRequestVisible = false">取 消</el-button>
-        <el-button :loading="ruleFormLoading" type="primary" @click="submitUnpledgeRequest">确 定</el-button>
+        <el-button :loading="ruleFormLoading" type="primary" @click="submitForm">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -527,20 +527,21 @@ export default {
       this.dialogVisible = true;
     },
     handleUnpledgeRequest(row, requestType) {
+      this.ruleForm = {};
+      this.getLastTransactionHistory(row).then(lastTransactionHistory => {
+        Object.assign(this.ruleForm, lastTransactionHistory);
+        this.requestType = "UnpledgeRequest";
+        this.UnpledgeRequestVisible = true;
+      });
+    },
+    handleConfirmRequest(row, requestType) {
+      this.ruleForm = {};
       this.getLastTransactionHistory(row).then(lastTransactionHistory => {
         Object.assign(this.ruleForm, lastTransactionHistory);
         this.requestType = requestType;
         this.ruleForm.ConfirmState = requestType;
         this.UnpledgeRequestVisible = true;
       });
-    },
-    submitUnpledgeRequest() {
-      if (this.requestType == "UnpledgeRequest")
-        this.ruleForm.UnpledgeRequestDate = parseTime(
-          new Date(),
-          "{y}-{m}-{d}"
-        );
-      this.submitForm();
     },
     handleRequest(row, requestType) {
       for (var k in this.ruleForm) {
@@ -574,15 +575,22 @@ export default {
         this.ruleForm.AmountOfMoneyRequest = parseInt(
           this.ruleForm.AmountOfMoneyRequest
         );
+      else if (this.requestType == "UnpledgeRequest")
+        this.ruleForm.UnpledgeRequestDate = parseTime(
+          new Date(),
+          "{y}-{m}-{d}"
+        );
       else if (
         this.requestType == "ConfirmRejected" ||
         this.requestType == "ConfirmResolved"
       ) {
         fcn = "confirmPledgeRequest";
-      } else if (this.requestType == "DeliveryRequest"){
-        this.ruleForm.DeliveryQuantity = parseInt(this.ruleForm.DeliveryQuantity);
+      } else if (this.requestType == "DeliveryRequest") {
+        this.ruleForm.DeliveryQuantity = parseInt(
+          this.ruleForm.DeliveryQuantity
+        );
       }
-      console.log(this.ruleForm)
+      console.log(this.ruleForm);
       memberRequest(fcn, this.ruleForm)
         .then(response => {
           if (!response.data.success) throw new Error(response.data.message);
