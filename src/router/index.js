@@ -7,10 +7,6 @@ Vue.use(Router)
 import Layout from '@/views/layout/Layout'
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
 
 /** note: submenu only apppear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -133,7 +129,7 @@ export const asyncRouterMap = [
         component: () => import('@/views/application/bank'),
         name: 'Application',
         meta: {
-          title: '申请列表',
+          title: 'checkList',
           icon: 'link'
         }
       }
@@ -166,24 +162,8 @@ export const asyncRouterMap = [
         component: () => import('@/views/warehouse-receipt-handle/storage'),
         name: 'WarehouseReceiptHandle',
         meta: {
-          title: '仓单处理',
+          title: 'receiptHandle',
           icon: 'nested',
-        }
-      }
-    ]
-  },
-  {
-    path: '/my-warehouse-receipt',
-    component: Layout,
-    meta : { roles: ['storage'] },
-    children: [
-      {
-        path: 'storage',
-        component: () => import('@/views/my-warehouse-receipt/storage'),
-        name: 'MyWarehouseReceipt',
-        meta: {
-          title: 'myWarehouseReceipt',
-          icon: 'documentation',
         }
       }
     ]
@@ -199,24 +179,8 @@ export const asyncRouterMap = [
         component: () => import('@/views/application/exchange'),
         name: 'Application',
         meta: {
-          title: '申请列表',
+          title: 'checkList',
           icon: 'link'
-        }
-      }
-    ]
-  },
-  {
-    path: '/warehouse-receipt-handle',
-    component: Layout,
-    meta : { roles: ['exchange'] },
-    children: [
-      {
-        path: 'exchange',
-        component: () => import('@/views/warehouse-receipt-handle/exchange'),
-        name: 'WarehouseReceiptHandle',
-        meta: {
-          title: '仓单处理',
-          icon: 'nested',
         }
       }
     ]
@@ -231,64 +195,13 @@ export const asyncRouterMap = [
         component: () => import('@/views/my-member/exchange'),
         name: 'MyMember',
         meta: {
-          title: '我的会员',
+          title: 'myMember',
           icon: 'peoples',
         }
       }
     ]
   },
   // origin
-  {
-    path: '/permission',
-    component: Layout,
-    redirect: '/permission/index',
-    alwaysShow: true, // will always show the root menu
-    meta: {
-      title: 'permission',
-      icon: 'lock',
-      roles: ['admin'] // you can set roles in root nav
-    },
-    children: [
-      {
-        path: 'page',
-        component: () => import('@/views/permission/page'),
-        name: 'PagePermission',
-        meta: {
-          title: 'pagePermission',
-          roles: ['admin'] // or you can only set roles in sub nav
-        }
-      },
-      {
-        path: 'directive',
-        component: () => import('@/views/permission/directive'),
-        name: 'DirectivePermission',
-        meta: {
-          title: 'directivePermission'
-          // if do not set roles, means: this page does not require permission
-        }
-      }
-    ]
-  },
-
-  {
-    path: '/icon',
-    component: Layout,
-    meta : { roles: ['admin'] },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/svg-icons/index'),
-        name: 'Icons',
-        meta: { title: 'icons', icon: 'icon', noCache: true }
-      }
-    ]
-  },
-
-  /** When your routing table is too long, you can split it into small modules**/
-  componentsRouter,
-  chartsRouter,
-  nestedRouter,
-  tableRouter,
 
   { path: '*', redirect: '/404', hidden: true }
 ]

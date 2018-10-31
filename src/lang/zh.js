@@ -22,6 +22,9 @@ export default {
     myWarehouseReceipt: '我的仓单',
 
     myClient: '我的客户',
+    myMember: '我的会员',
+    checkList: '审核列表',
+    receiptHandle: '仓单处理',
     // --------------------------
     dashboard: '首页',
     introduction: '简述',

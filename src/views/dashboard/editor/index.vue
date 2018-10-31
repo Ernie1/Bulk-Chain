@@ -5,7 +5,8 @@
     </div>
     <div class="band">Bulk Chain</div>
     <h1>区块链农产品仓单系统</h1>
-    <h2 class="display_name">我是{{ name }}</h2>
+    <h2 v-if="name" class="display_name">我是{{ name }}</h2>
+    <el-button v-else @click="logout" type="success" class="display_name" round>登录</el-button>    
   </div>
 </template>
  
@@ -21,6 +22,13 @@ export default {
   },
   computed: {
     ...mapGetters(["name", "avatar", "roles"])
+  },
+  methods:{
+    logout() {
+      this.$store.dispatch('LogOut').then(() => {
+        location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+      })
+    }
   }
 };
 </script>
@@ -44,10 +52,11 @@ export default {
     font-size: 60px;
   }
   .display_name{
-    margin-top: 60px;
+    margin-top: 40px;
     padding: 10px 50px;
     background-image: url("../../../img/btn_s.png");
     background-size: 100% 100%; 
+    font-size: 20px;
   }
 }
 </style>
