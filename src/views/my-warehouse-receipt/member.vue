@@ -223,6 +223,18 @@
               <md-input v-if="requestType=='PledgeRequest'" v-model="ruleForm.DateDDL">质押期限</md-input>
               <md-input v-if="requestType=='DeliveryRequest'" v-model="ruleForm.DeliveryVarietyCode">品种代号</md-input>
               <md-input v-if="requestType=='DeliveryRequest'" v-model="ruleForm.DeliveryQuantity">仓单数量</md-input>
+              <template v-if="requestType=='PledgeRequest'">
+                <el-form-item style="height: 70px; display: flex; align-items: center;" label="质押类型">
+                  <el-radio-group v-model="ruleForm.PledgeType"> 
+                    <el-radio label="Inside">所内质押</el-radio>
+                    <el-radio label="Outside">所外质押</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                <template v-if="ruleForm.PledgeType=='Outside'">
+                  <md-input v-model="ruleForm.TargetBankId">银行ID</md-input>
+                  <md-input v-model="ruleForm.TargetBankName">银行名称</md-input>
+                </template>
+              </template>
             </el-form-item>
           </el-form>
         </div>
@@ -483,7 +495,6 @@ export default {
       } else if (requestType == "OutboundRequest") {
         this.ruleForm.OutboundingSeriesId = row.WarehouseReceiptSeriesId;
       } else if (requestType == "PledgeRequest") {
-        this.ruleForm.PledgeType = "Inside";
         this.ruleForm.PledgingWarehouseReceiptSeriesId =
           row.WarehouseReceiptSeriesId;
       } else if (requestType == "DeliveryRequest") {
@@ -512,6 +523,7 @@ export default {
       } else if (this.requestType == "DeliveryRequest"){
         this.ruleForm.DeliveryQuantity = parseInt(this.ruleForm.DeliveryQuantity);
       }
+      console.log(this.ruleForm)
       memberRequest(fcn, this.ruleForm)
         .then(response => {
           if (!response.data.success) throw new Error(response.data.message);
