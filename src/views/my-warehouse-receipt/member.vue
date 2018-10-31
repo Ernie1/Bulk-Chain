@@ -181,7 +181,7 @@
             <el-button type="danger" size="mini" @click.stop="handleUnpledgeRequest(scope.row)">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
           </template>
 
-          <template v-if="scope.row.LastTransactionHistory">
+          <template v-if="scope.row.LastTransactionHistory&&scope.row.LastTransactionHistory.ConfirmState=='Confirming'">
             <el-button type="danger" size="mini" @click.stop="handleConfirmRequest(scope.row, 'ConfirmRejected')">取消</el-button>
             <el-button type="success" size="mini" @click.stop="handleConfirmRequest(scope.row, 'ConfirmResolved')">确认</el-button>
           </template>
@@ -243,16 +243,16 @@
         <el-form v-if="active==1" :model="ruleForm" ref="ruleForm" label label-position="right">
           <div style="display: flex; justify-content: center;">
             <!--  -->
-            <div v-if="ruleForm.CheckState.substr(ruleForm.CheckState.length - 3)=='ing'">
-              <h1><i class="el-icon-time"></i> 您的{{ requestType | reqType2CHFilter }}申请已提交审核，请耐心等候</h1>
-            </div>
-            <!--  -->
-            <div v-else-if="ruleForm.CheckState=='Rejected'" style="display: flex; align-items: center;">
+            <div v-if="ruleForm.CheckState=='Rejected'" style="display: flex; align-items: center;">
               <h1><i class="el-icon-circle-close-outline"></i> 您的{{ requestType | reqType2CHFilter }}申请未通过审核</h1>
               <h2>&nbsp;&nbsp;{{ ruleForm.Description }}</h2>
             </div>
-            <div v-else>
+            <div v-else-if="ruleForm.CheckState=='Resolved'">
               <h1><i class="el-icon-circle-check-outline"></i> 您的{{ requestType | reqType2CHFilter }}申请已审核通过</h1>
+            </div>
+            <!--  -->
+            <div v-else>
+              <h1><i class="el-icon-time"></i> 您的{{ requestType | reqType2CHFilter }}申请已提交审核，请耐心等候</h1>
             </div>
           </div>
         </el-form>
@@ -535,13 +535,10 @@ export default {
       });
     },
     handleConfirmRequest(row, requestType) {
-      this.ruleForm = {};
-      this.getLastTransactionHistory(row).then(lastTransactionHistory => {
-        Object.assign(this.ruleForm, lastTransactionHistory);
-        this.requestType = requestType;
-        this.ruleForm.ConfirmState = requestType;
-        this.UnpledgeRequestVisible = true;
-      });
+      this.ruleForm = Object.assign({}, row.LastTransactionHistory);
+      this.requestType = requestType;
+      this.ruleForm.ConfirmState = requestType;
+      this.UnpledgeRequestVisible = true;
     },
     handleRequest(row, requestType) {
       for (var k in this.ruleForm) {
@@ -590,7 +587,6 @@ export default {
           this.ruleForm.DeliveryQuantity
         );
       }
-      console.log(this.ruleForm);
       memberRequest(fcn, this.ruleForm)
         .then(response => {
           if (!response.data.success) throw new Error(response.data.message);

@@ -43,7 +43,7 @@ export function memberRequest(fcn, form) {
   req.peers = ["peer1"]
   form.MemberId = store.getters.id
   form.MemberName = store.getters.name
-  if (fcn != "sendUnpledgeRequest")
+  if (fcn != "sendUnpledgeRequest" && fcn != "confirmPledgeRequest")
     form.DateRequest = parseTime(new Date(), '{y}-{m}-{d}')
   req.args = [JSON.stringify(form)]
   return request({
