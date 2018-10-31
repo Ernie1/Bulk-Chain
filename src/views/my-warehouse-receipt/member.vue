@@ -260,27 +260,86 @@
         <!-- 申请表详情 -->
         <el-form v-if="active!=0" :model="ruleForm" ref="ruleForm" label label-position="left">
           <div style="height: 50px"></div>
-          <el-form-item label="交易号">
-            <span>{{ ruleForm.TransactionId }}</span>
-          </el-form-item>
-          <el-form-item label="会员联系人">
-            <span>{{ ruleForm.MemberContact }}</span>
-          </el-form-item>
-          <el-form-item label="会员联系人电话">
-            <span>{{ ruleForm.MemberContactPhoneNumber }}</span>
-          </el-form-item>
-          <el-form-item label="客户ID">
-            <span>{{ ruleForm.ClientId }}</span>
-          </el-form-item>
-          <el-form-item label="客户名称">
-            <span>{{ ruleForm.ClientName }}</span>
-          </el-form-item>
-          <el-form-item label="客户联系人">
-            <span>{{ ruleForm.ClientContact }}</span>
-          </el-form-item>
-          <el-form-item label="客户联系人电话">
-            <span>{{ ruleForm.ClientContactPhoneNumber }}</span>
-          </el-form-item>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="交易号">
+                <span>{{ ruleForm.TransactionId }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="会员联系人">
+                <span>{{ ruleForm.MemberContact }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="会员联系人电话">
+                <span>{{ ruleForm.MemberContactPhoneNumber }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="客户ID">
+                <span>{{ ruleForm.ClientId }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="客户名称">
+                <span>{{ ruleForm.ClientName }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="客户联系人">
+                <span>{{ ruleForm.ClientContact }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="客户联系人电话">
+                <span>{{ ruleForm.ClientContactPhoneNumber }}</span>
+              </el-form-item>
+            </el-col>
+            
+            <div v-if="ruleForm.MatchState">
+              <el-col :span="12">
+                <el-form-item label="匹配状态">
+                  <span>{{ ruleForm.MatchState | MatchState2CHFilter }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="匹配日期">
+                  <span>{{ ruleForm.DateMatch }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="匹配客户ID">
+                  <span>{{ ruleForm.MatchClientId }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="匹配客户名称">
+                  <span>{{ ruleForm.MatchClientName }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="匹配会员ID">
+                  <span>{{ ruleForm.MatchMemberId }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="匹配会员名称">
+                  <span>{{ ruleForm.MatchMemberName }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="匹配申请ID">
+                  <span>{{ ruleForm.MatchTxId }}</span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="匹配数量">
+                  <span>{{ ruleForm.MatchQuantity }}</span>
+                </el-form-item>
+              </el-col>
+            </div>
+          </el-row>
         </el-form>
       </div>
 
