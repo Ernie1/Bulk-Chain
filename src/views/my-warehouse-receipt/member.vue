@@ -297,7 +297,7 @@
               </el-form-item>
             </el-col>
             
-            <div v-if="ruleForm.MatchState">
+            <div v-if="ruleForm.TxType=='DeliveryRequest'">
               <el-col :span="12">
                 <el-form-item label="匹配状态">
                   <span>{{ ruleForm.MatchState | MatchState2CHFilter }}</span>
