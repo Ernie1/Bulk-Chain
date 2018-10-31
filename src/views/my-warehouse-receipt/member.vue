@@ -200,7 +200,7 @@
       :visible.sync="dialogVisible">
       <!--  -->
       <el-steps :active="active" finish-status="success" align-center>
-        <el-step v-if="requestType=='DeliveryRequest'" title="买入申请" icon="el-icon-edit-outline"></el-step>
+        <el-step v-if="requestType=='DeliveryRequest'&&ruleForm.DeliveryType=='Buyer'" title="买入申请" icon="el-icon-edit-outline"></el-step>
         <el-step v-else :title="reqType2CHFilter(requestType)+'申请'" icon="el-icon-edit-outline"></el-step>
         <el-step title="提交审核" icon="el-icon-upload2"></el-step>
       </el-steps>

@@ -25,7 +25,7 @@
       </el-table-column>
       <el-table-column label="状态" class-name="status-col" width="300px">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.CheckState | appStatus2ColorFilter">{{ scope.row.CheckState | appStatus2CHFilter }}</el-tag>
+          <el-tag :type="scope.row.CheckState | appStatus2ColorFilter">{{ scope.row.CheckState | inboundAppStatus2CHFilter }}</el-tag>
         </template>
       </el-table-column>
     </el-table>

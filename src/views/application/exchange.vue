@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column label="申请日期" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.DateRequest }}</span>
+          <span>{{ scope.row.TxType=="UnpledgeRequest"?scope.row.UnpledgeRequestDate:scope.row.DateRequest }}</span>
         </template>
       </el-table-column>
       <el-table-column label="状态 / 操作" class-name="status-col">
@@ -61,7 +61,7 @@
             <!--  -->
             <div v-if="ruleForm.CheckState == 'Rejected'" style="display: flex; align-items: center;">
               <h1><i class="el-icon-circle-close-outline"></i> 已拒绝{{ ruleForm.DeliveryType | DeliveryType2CHFilter }}{{ ruleForm.TxType | TxType2CHFilter }}申请</h1>
-              <h2>&nbsp;&nbsp;{{ ruleForm.Description }}</h2>
+              <h2>&nbsp;&nbsp;{{ ruleForm.TxType=="UnpledgeRequest"?ruleForm.DescriptionUnpledge:ruleForm.Description }}</h2>
             </div>
             <div v-if="ruleForm.CheckState == 'Resolved'">
               <h1><i class="el-icon-circle-check-outline"></i> 已批准{{ ruleForm.DeliveryType | DeliveryType2CHFilter }}{{ ruleForm.TxType | TxType2CHFilter }}申请<span v-if="ruleForm.MatchState" >，{{ ruleForm.MatchState | MatchState2CHFilter }}</span></h1>
@@ -77,14 +77,17 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="申请日期">
-                  <span>{{ ruleForm.DateRequest }}</span>
+                  <span>{{ ruleForm.TxType=="UnpledgeRequest"?ruleForm.UnpledgeRequestDate:ruleForm.DateRequest }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item v-if="ruleForm.CheckState != 'Checking'" label="审核日期">
-                  <span>{{ ruleForm.DateCheck }}</span>
+                  <span>{{ ruleForm.TxType=="UnpledgeRequest"?ruleForm.DateCheckUnpledge:ruleForm.DateCheck }}</span>
                 </el-form-item>
               </el-col>
+              <el-form-item v-if="ruleForm.AmountOfMoneyRequest" label="质押额度">
+                <span>{{ ruleForm.AmountOfMoneyRequest }}</span>
+              </el-form-item>
             </el-row>
           <!-- </el-row> -->
         </el-form>
@@ -258,7 +261,10 @@
       <div style="width: 600px; margin: 20px auto">
         <!-- 第1步骤 -->
         <el-form :model="ruleForm">
-            <el-form-item prop="Description">
+            <el-form-item v-if="ruleForm.TxType=='UnpledgeRequest'" prop="DescriptionUnpledge">
+              <md-input v-model="ruleForm.DescriptionUnpledge">说明</md-input>
+            </el-form-item>
+            <el-form-item v-else prop="Description">
               <md-input v-model="ruleForm.Description">说明</md-input>
             </el-form-item>
         </el-form>
@@ -323,8 +329,7 @@ export default {
         { label: "全部", key: "*" },
         { label: "注册审核", key: "RegisterRequest" },
         { label: "交割审核", key: "DeliveryRequest" },
-        { label: "质押审核", key: "PledgeRequest" },
-        { label: "解押审核", key: "UnpledgeRequest" },
+        { label: "质押 / 解押审核", key: "PledgeRequest" },
         { label: "注销审核", key: "UnregisterRequest" }
       ],
       requestsType: "*",
@@ -350,10 +355,14 @@ export default {
               if (myRequests[i].RegisteringWarehouseReceipt)
                 myRequests[i].WarehouseReceipt =
                   myRequests[i].RegisteringWarehouseReceipt;
-              else if (myRequests[i].PledgingWarehouseReceipt)
+              else if (myRequests[i].PledgingWarehouseReceipt) {
                 myRequests[i].WarehouseReceipt =
                   myRequests[i].PledgingWarehouseReceipt;
-              else if (myRequests[i].UnpledgingWarehouseReceipt)
+                if (myRequests[i].CheckStateUnpledge != "") {
+                  myRequests[i].TxType = "UnpledgeRequest";
+                  myRequests[i].CheckState = myRequests[i].CheckStateUnpledge;
+                }
+              } else if (myRequests[i].UnpledgingWarehouseReceipt)
                 myRequests[i].WarehouseReceipt =
                   myRequests[i].UnpledgingWarehouseReceipt;
               else if (myRequests[i].UnregisteringWarehouseReceipt)
@@ -375,7 +384,7 @@ export default {
     handleRowClick(a, b, c) {
       this.dialogVisible = true;
       this.ruleForm = Object.assign({}, a);
-      // console.log(this.ruleForm);
+      console.log(this.ruleForm);
     },
     handleSizeChange(val) {
       this.listQuery.limit = val;
@@ -393,6 +402,7 @@ export default {
         this.ruleForm[k] = "";
       }
       this.ruleForm = Object.assign(this.ruleForm, row);
+      console.log(this.ruleForm.TxType);
       this.ruleForm.CheckState = CheckState;
       this.fcn = fcn;
       this.checkOrRegisterVisible = true;
@@ -405,10 +415,16 @@ export default {
       this.MatchRequestVisible = true;
     },
     submitForm() {
-      this.ruleForm.DateCheck = parseTime(new Date(), "{y}-{m}-{d}");
+      var ruleForm = Object.assign({}, this.ruleForm);
+      if (ruleForm.TxType == "UnpledgeRequest") {
+        ruleForm.TxType = "PledgeRequest";
+        ruleForm.CheckStateUnpledge = ruleForm.CheckState;
+        ruleForm.CheckState = "Resolved";
+        ruleForm.DateCheckUnpledge = parseTime(new Date(), "{y}-{m}-{d}");
+      } else ruleForm.DateCheck = parseTime(new Date(), "{y}-{m}-{d}");
       this.ruleFormLoading = true;
       // console.log(this.ruleForm);
-      storageRequest(this.fcn, this.ruleForm)
+      storageRequest(this.fcn, ruleForm)
         .then(response => {
           if (!response.data.success) throw new Error(response.data.message);
           this.ruleFormLoading = false;
