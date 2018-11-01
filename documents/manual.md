@@ -28,9 +28,7 @@ Bulk Chain 面向各大交易所大宗农产品仓单交易，在系统上可进
 </p>
 
 ### 系统流程
-<p align="center">
-  <img width="600" src="process.png">
-</p>
+![process](process.png)
 
 ### 声明
 1. 不在用户PC端安装任何插件或强制用户安装任何插件；
