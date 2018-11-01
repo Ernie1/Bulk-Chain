@@ -181,7 +181,7 @@
             <el-button type="danger" size="mini" @click.stop="handleUnpledgeRequest(scope.row)">{{ $t('myWarehouseReceipt.Unpledge') }}</el-button>
           </template>
 
-          <template v-if="scope.row.LastTransactionHistory&&scope.row.LastTransactionHistory.ConfirmState=='Confirming'">
+          <template v-if="scope.row.LastTransactionHistory">
             <el-button type="danger" size="mini" @click.stop="handleConfirmRequest(scope.row, 'ConfirmRejected')">取消</el-button>
             <el-button type="success" size="mini" @click.stop="handleConfirmRequest(scope.row, 'ConfirmResolved')">确认</el-button>
           </template>

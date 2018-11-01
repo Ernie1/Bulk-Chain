@@ -24,6 +24,11 @@ Bulk Chain 面向各大交易所大宗农产品仓单交易，在系统上可进
 
 ### 系统功能
 <p align="center">
+  <img width="600" src="function.png">
+</p>
+
+### 系统流程
+<p align="center">
   <img width="600" src="process.png">
 </p>
 
