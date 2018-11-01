@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     
-    <el-button style="margin-bottom: 30px;" type="primary" icon="el-icon-edit" @click="handleBuyRequest">填写买入申请</el-button>
+    <!-- <el-button style="margin-bottom: 30px;" type="primary" icon="el-icon-edit" @click="handleBuyRequest">填写买入申请</el-button> -->
     
     <el-table
       ref="multipleTable"

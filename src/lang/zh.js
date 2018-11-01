@@ -18,7 +18,7 @@ export default {
     outboundRequest: '出库申请',
 
     application: '申请仓单',
-
+    memberbuy: '买入申请',
     myWarehouseReceipt: '我的仓单',
 
     myClient: '我的客户',

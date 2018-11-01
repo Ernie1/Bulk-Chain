@@ -87,6 +87,22 @@ export const asyncRouterMap = [
     ]
   },
   {
+    path: '/buy',
+    component: Layout,
+    meta : { roles: ['member'] },
+    children: [
+      {
+        path: 'member',
+        component: () => import('@/views/application/memberbuy'),
+        name: 'Buy',
+        meta: {
+          title: 'memberbuy',
+          icon: 'shoppingCard',
+        }
+      }
+    ]
+  },
+  {
     path: '/my-warehouse-receipt',
     component: Layout,
     meta : { roles: ['member'] },
