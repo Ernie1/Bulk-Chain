@@ -144,7 +144,7 @@
             </el-row>
           </el-form-item>
           <!--  -->
-          <el-form-item label="货物信息">
+          <el-form-item v-if="ruleForm.TxType!='OutboundRequest'" label="货物信息">
             <el-row>
               <el-col :span="12">
                 <el-form-item label="品种代号">
@@ -281,7 +281,7 @@
       <div style="width: 600px; margin: 20px auto">
         <!-- 第1步骤 -->
         <el-form :model="ruleForm" label-width="100px" label-position="left">
-          <el-card>
+          <el-card v-if="ruleForm.TxType!='OutboundRequest'">
             <el-form-item label="货物信息">
               <el-row>
                 <el-col :span="6">
@@ -429,46 +429,35 @@ export default {
       ],
       requestsType: "*",
       fcn: null,
+      ruleForm: {
+        Signer: "林一山",
+        SignPlace: "河南",
+        SignDate: "2018-11-01",
+        StartDate: "2018-11-01",
+        EndDate: "2019-11-01",
+        Address: "河南省郑州市友爱路1号",
+        Location: "1A01-04-0"
+      }
       // ruleForm: {
-      //   name: "张三",
-      //   phone: "19900289212",
-      //   clientID: "client_000001",
-      //   clientCompany: "A农产品加工有限公司",
-      //   clientName: "莉莉丝",
-      //   clientPhone: "19900289212",
-      //   goodsVariety: "WH",
-      //   goodsQuantity: "200",
-      //   goodsLevel: "A",
-      //   goodsRegion: "河南",
-      //   goodsTransport: "货车",
-      //   goodsProduceDate: "2018-10-01",
-      //   goodsValidityPeriod: "2019-10-01",
+      //   name: "",
+      //   phone: "",
+      //   clientID: "",
+      //   clientCompany: "",
+      //   clientName: "",
+      //   clientPhone: "",
+      //   goodsVariety: "",
+      //   goodsQuantity: "",
+      //   goodsLevel: "",
+      //   goodsRegion: "",
+      //   goodsTransport: "",
+      //   goodsProduceDate: "",
+      //   goodsValidityPeriod: "",
       //   goodsBand: "",
       //   goodsPack: "",
       //   goodsRank: "",
-      //   warehouseID: "CCMID",
-      //   inboundPlanTime: "2018-10-10"
-      // },
-      ruleForm: {
-        name: "",
-        phone: "",
-        clientID: "",
-        clientCompany: "",
-        clientName: "",
-        clientPhone: "",
-        goodsVariety: "",
-        goodsQuantity: "",
-        goodsLevel: "",
-        goodsRegion: "",
-        goodsTransport: "",
-        goodsProduceDate: "",
-        goodsValidityPeriod: "",
-        goodsBand: "",
-        goodsPack: "",
-        goodsRank: "",
-        warehouseID: "",
-        inboundPlanTime: ""
-      }
+      //   warehouseID: "",
+      //   inboundPlanTime: ""
+      // }
     };
   },
   created() {
@@ -515,9 +504,9 @@ export default {
       );
     },
     checkOrRegister(row, fcn, CheckState) {
-      for (var k in this.ruleForm) {
-        this.ruleForm[k] = "";
-      }
+      // for (var k in this.ruleForm) {
+      //   this.ruleForm[k] = "";
+      // }
       this.ruleForm = Object.assign(this.ruleForm, row);
       if (
         this.fcn == "checkInboundRequest" ||
@@ -553,7 +542,7 @@ export default {
       console.log(this.ruleForm);
       storageRequest(this.fcn, this.ruleForm)
         .then(response => {
-          console.log(response);
+          // console.log(response);
           if (!response.data.success) throw new Error(response.data.message);
           this.ruleFormLoading = false;
           Message.success("提交成功！");

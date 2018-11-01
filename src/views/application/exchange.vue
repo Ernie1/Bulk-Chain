@@ -434,8 +434,8 @@ export default {
           this.getList();
         })
         .catch(error => {
-          this.ruleFormLoading = false;
           Message.error("提交失败！");
+          this.ruleFormLoading = false;
         });
     },
     handleClose(done) {

@@ -63,6 +63,9 @@
             <el-form-item prop="clientID">
               <md-input v-model="ruleForm.clientID">客户ID</md-input>
             </el-form-item>
+            <el-form-item prop="clientCompany">
+              <md-input v-model="ruleForm.clientCompany">客户名称</md-input>
+            </el-form-item>
             <el-form-item prop="clientName">
               <md-input v-model="ruleForm.clientName">客户联系人</md-input>
             </el-form-item>
@@ -132,6 +135,9 @@
           <el-form-item label="仓库信息">
             <el-form-item prop="warehouseID">
               <md-input v-model="ruleForm.warehouseID">仓库ID</md-input>
+            </el-form-item>
+            <el-form-item prop="TargetWarehouseName">
+              <md-input v-model="ruleForm.TargetWarehouseName">仓库名称</md-input>
             </el-form-item>
             <el-form-item prop="inboundPlanTime">
               <md-input v-model="ruleForm.inboundPlanTime">拟入库时间</md-input>
@@ -220,7 +226,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="名称">
+                <el-form-item label="客户名称">
                   <span>{{ ruleForm.clientCompany }}</span>
                 </el-form-item>
               </el-col>
@@ -350,51 +356,55 @@ export default {
       },
       dialogVisible: false,
       active: 1,
-      // ruleForm: {
-      //   name: "张三",
-      //   phone: "19900289212",
-      //   clientID: "client_000001",
-      //   clientCompany: "A农产品加工有限公司",
-      //   clientName: "莉莉丝",
-      //   clientPhone: "19900289212",
-      //   goodsVariety: "WH",
-      //   goodsQuantity: "200",
-      //   goodsLevel: "A",
-      //   goodsRegion: "河南",
-      //   goodsTransport: "货车",
-      //   goodsProduceDate: "2018-10-01",
-      //   goodsValidityPeriod: "2019-10-01",
-      //   goodsBand: "",
-      //   goodsPack: "",
-      //   goodsRank: "",
-      //   warehouseID: "CCMID",
-      //   inboundPlanTime: "2018-10-10"
-      // },
       ruleForm: {
-        name: "",
-        phone: "",
-        clientID: "",
-        clientCompany: "",
-        clientName: "",
-        clientPhone: "",
-        goodsVariety: "",
-        goodsQuantity: "",
-        goodsLevel: "",
-        goodsRegion: "",
-        goodsTransport: "",
-        goodsProduceDate: "",
-        goodsValidityPeriod: "",
+        name: "张三",
+        phone: "19900289212",
+        clientID: "client_000001",
+        clientCompany: "A农产品加工有限公司",
+        clientName: "莉莉丝",
+        clientPhone: "19900289212",
+        goodsVariety: "WH",
+        goodsQuantity: "200",
+        goodsLevel: "A",
+        goodsRegion: "河南",
+        goodsTransport: "货车",
+        goodsProduceDate: "2018-10-01",
+        goodsValidityPeriod: "2019-10-01",
         goodsBand: "",
         goodsPack: "",
         goodsRank: "",
-        warehouseID: "",
-        inboundPlanTime: ""
+        warehouseID: "CCMID",
+        TargetWarehouseName: "C仓库",
+        inboundPlanTime: "2018-11-11"
       },
+      // ruleForm: {
+      //   name: "",
+      //   phone: "",
+      //   clientID: "",
+      //   clientCompany: "",
+      //   clientName: "",
+      //   clientPhone: "",
+      //   goodsVariety: "",
+      //   goodsQuantity: "",
+      //   goodsLevel: "",
+      //   goodsRegion: "",
+      //   goodsTransport: "",
+      //   goodsProduceDate: "",
+      //   goodsValidityPeriod: "",
+      //   goodsBand: "",
+      //   goodsPack: "",
+      //   goodsRank: "",
+      //   warehouseID: "",
+      //   inboundPlanTime: ""
+      // },
       rules: {
         name: [{ required: true, message: "请输入联系人", trigger: "blur" }],
         phone: [{ required: true, message: "请输入电话", trigger: "blur" }],
         clientID: [
           { required: true, message: "请输入客户ID", trigger: "blur" }
+        ],
+        clientCompany: [
+          { required: true, message: "请输入客户名称", trigger: "blur" }
         ],
         clientName: [
           { required: true, message: "请输入客户联系人", trigger: "blur" }
@@ -414,17 +424,20 @@ export default {
         goodsRegion: [
           { required: true, message: "请输入产地", trigger: "blur" }
         ],
-        goodsTransport: [
-          { required: true, message: "请输入运输方式", trigger: "blur" }
-        ],
-        goodsProduceDate: [
-          { required: true, message: "请输入生产日期", trigger: "blur" }
-        ],
-        goodsValidityPeriod: [
-          { required: true, message: "请输入有效期至", trigger: "blur" }
-        ],
+        // goodsTransport: [
+        //   { required: true, message: "请输入运输方式", trigger: "blur" }
+        // ],
+        // goodsProduceDate: [
+        //   { required: true, message: "请输入生产日期", trigger: "blur" }
+        // ],
+        // goodsValidityPeriod: [
+        //   { required: true, message: "请输入有效期至", trigger: "blur" }
+        // ],
         warehouseID: [
           { required: true, message: "请输入仓库ID", trigger: "blur" }
+        ],
+        TargetWarehouseName: [
+          { required: true, message: "请输入仓库名称", trigger: "blur" }
         ],
         inboundPlanTime: [
           { required: true, message: "请输入拟入库时间", trigger: "blur" }
@@ -518,9 +531,9 @@ export default {
           .catch(_ => {});
     },
     handleNewRequest() {
-      for (var k in this.ruleForm) {
-        this.ruleForm[k] = "";
-      }
+      // for (var k in this.ruleForm) {
+      //   this.ruleForm[k] = "";
+      // }
       this.active = 0;
       this.dialogVisible = true;
     }

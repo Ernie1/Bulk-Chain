@@ -130,7 +130,9 @@ export function rcptStatus2CHFilter(status) {
     Pledging: "质押审核中",
     Unpledging: "解押审核中",
     Unregistering: "注销审核中",
-    Deliverying: "交割审核中"
+    Deliverying: "交割审核中",
+    OutboundReady: "可出库",
+    Unregistered: "已注销"
   };
   return statusMap[status] || status;
 }

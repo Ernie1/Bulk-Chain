@@ -221,8 +221,8 @@
               <md-input v-if="requestType=='OutboundRequest'" v-model="ruleForm.DateInPlan">预计提货时间</md-input>
               <md-input v-if="requestType=='PledgeRequest'" v-model="ruleForm.AmountOfMoneyRequest">申请额度</md-input>
               <md-input v-if="requestType=='PledgeRequest'" v-model="ruleForm.DateDDL">质押期限</md-input>
-              <md-input v-if="requestType=='DeliveryRequest'" v-model="ruleForm.DeliveryVarietyCode">品种代号</md-input>
-              <md-input v-if="requestType=='DeliveryRequest'" v-model="ruleForm.DeliveryQuantity">仓单数量</md-input>
+              <md-input v-if="requestType=='DeliveryRequest'&&ruleForm.DeliveryType=='Buyer'" v-model="ruleForm.DeliveryVarietyCode">品种代号</md-input>
+              <md-input v-if="requestType=='DeliveryRequest'&&ruleForm.DeliveryType=='Buyer'" v-model="ruleForm.DeliveryQuantity">仓单数量</md-input>
               <template v-if="requestType=='PledgeRequest'">
                 <el-form-item style="height: 70px; display: flex; align-items: center;" label="质押类型">
                   <el-radio-group v-model="ruleForm.PledgeType"> 
@@ -394,19 +394,27 @@ export default {
       dialogVisible: false,
       UnpledgeRequestVisible: false,
       active: 0,
+      // ruleForm: {
+      //   MemberId: "",
+      //   MemberName: "",
+      //   MemberContact: "",
+      //   MemberContactPhoneNumber: "",
+      //   ClientId: "",
+      //   ClientName: "",
+      //   ClientContact: "",
+      //   ClientContactPhoneNumber: "",
+      //   RequestSeriesId: "",
+      //   DateInPlan: "",
+      //   AmountOfMoneyRequest: "",
+      //   DateDDL: ""
+      // },
       ruleForm: {
-        MemberId: "",
-        MemberName: "",
-        MemberContact: "",
-        MemberContactPhoneNumber: "",
-        ClientId: "",
-        ClientName: "",
-        ClientContact: "",
-        ClientContactPhoneNumber: "",
-        RequestSeriesId: "",
-        DateInPlan: "",
-        AmountOfMoneyRequest: "",
-        DateDDL: ""
+        MemberContact: "张三",
+        MemberContactPhoneNumber: "19900289212",
+        ClientId: "client_000001",
+        ClientName: "A农产品加工有限公司",
+        ClientContact: "莉莉丝",
+        ClientContactPhoneNumber: "19900289212"
       },
       tableKey: 0,
       list: null,
@@ -431,10 +439,20 @@ export default {
       queryWarehouseReceiptTransactionHistory(row.WarehouseReceiptSeriesId)
         .then(response => {
           const TransactionHistory = JSON.parse(response.data.message);
+          var temList = [];
           for (var i = 0; i < TransactionHistory.length; i++) {
-            TransactionHistory[i] = JSON.parse(TransactionHistory[i]);
+            var tem = JSON.parse(TransactionHistory[i]);
+            temList.push(tem);
+            if (tem.TxType == "PledgeRequest" && tem.CheckStateUnpledge != "") {
+              tem = Object.assign({}, tem);
+              tem.TxType = "UnpledgeRequest";
+              tem.CheckState = tem.CheckStateUnpledge;
+              tem.DateCheck = tem.DateCheckUnpledge;
+              tem.DateRequest = tem.UnpledgeRequestDate;
+              temList.push(tem);
+            }
           }
-          row.TransactionHistory = TransactionHistory.reverse();
+          row.TransactionHistory = temList.reverse();
           // console.log(TransactionHistory);
           row.transHisListLoading = false;
         })
@@ -518,9 +536,9 @@ export default {
           .catch(_ => {});
     },
     handleBuyRequest() {
-      for (var k in this.ruleForm) {
-        this.ruleForm[k] = "";
-      }
+      // for (var k in this.ruleForm) {
+      //   this.ruleForm[k] = "";
+      // }
       this.active = 0;
       this.requestType = "DeliveryRequest";
       this.ruleForm.DeliveryType = "Buyer";
@@ -541,9 +559,9 @@ export default {
       this.UnpledgeRequestVisible = true;
     },
     handleRequest(row, requestType) {
-      for (var k in this.ruleForm) {
-        this.ruleForm[k] = "";
-      }
+      // for (var k in this.ruleForm) {
+      //   this.ruleForm[k] = "";
+      // }
       this.ruleForm.TxType = requestType;
       this.ruleForm.RequestSeriesId = row.WarehouseReceiptSeriesId;
       if (requestType == "RegisterRequest") {
@@ -558,6 +576,8 @@ export default {
         this.ruleForm.DeliveryType = "Seller";
         this.ruleForm.DeliveryWarehouseReceiptSeriesId =
           row.WarehouseReceiptSeriesId;
+        this.ruleForm.DeliveryVarietyCode = row.VarietyCode;
+        this.ruleForm.DeliveryQuantity = row.Quantity;
       } else if (requestType == "UnregisterRequest") {
         this.ruleForm.UnregisteringSeriesId = row.WarehouseReceiptSeriesId;
       }
@@ -566,6 +586,7 @@ export default {
       this.dialogVisible = true;
     },
     submitForm() {
+      console.log(this.ruleForm)
       this.ruleFormLoading = true;
       var fcn = "send" + this.requestType;
       if (this.requestType == "PledgeRequest")
@@ -592,8 +613,8 @@ export default {
           if (!response.data.success) throw new Error(response.data.message);
           this.ruleFormLoading = false;
           Message.success("提交成功！");
-          this.dialogVisible = false;
           this.UnpledgeRequestVisible = false;
+          this.dialogVisible = false;
           this.getList();
         })
         .catch(error => {
